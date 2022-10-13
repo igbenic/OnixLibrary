@@ -18,7 +18,6 @@ type
         constructor Create(oldEvent: TDataSetNotifyEvent);
     end;
 
-
 function oxSQLExp(SQL: String): String;
 function oxSQLExpWithParams(SQL: String; params: array of Variant): String;
 function oxAddColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
