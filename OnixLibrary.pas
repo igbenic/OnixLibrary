@@ -1,5 +1,7 @@
 unit OnixLibrary;
 
+// verzija 1
+
 interface 
 
 uses dlComponents, cxgrid, controls, Variants, dlDatabase, Sysutils, cxCalc, Forms, dialogs, Classes;
