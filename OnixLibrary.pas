@@ -494,4 +494,20 @@ begin
     Result := strToFloat(someText);
 end;
 
+// dovanje stupca redni broj
+procedure GetDataTextOrdinalNumber(Sender: TcxCustomGridTableView; ARecordIndex: Integer; var AText: String);
+var AIndex: Integer;
+begin
+    AIndex := TcxGridDBTableView(Sender).DataController.GetRowIndexByRecordIndex(ARecordIndex, False);
+    AText := IntToStr(AIndex + 1);
+end;
+
+procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Redni broj');
+begin
+    with oxAddColumn(grid, columnCaption) do
+    begin
+        GetDataText := GetDataTextOrdinalNumber;
+    end;
+end
+
 end.
