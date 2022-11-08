@@ -1,6 +1,6 @@
 unit OnixLibrary;
 
-// verzija 1
+// verzija 2
 
 interface 
 
@@ -17,6 +17,13 @@ type
         NewEvent: procedure(DataSet: TdlDataSet);
         constructor Create(oldEvent: TDataSetNotifyEvent);
     end;
+    
+type
+    TcxDisplayTextOrdinalHelper = class(TObject)
+    public 
+        GetDisplayTextOrdinalNumber: procedure(Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord; var AText: String);
+    end;
+    
 
 function oxSQLExp(SQL: String): String;
 function oxSQLExpWithParams(SQL: String; params: array of Variant): String;
@@ -40,6 +47,7 @@ procedure oxRedrawGrid(grid: String);
 procedure oxHackRefreshDataSet(dataSet: String);
 procedure oxHackRefreshGrid(grid: String; callback: oxCallback);
 procedure oxConfirm(what: String; onYes: oxCallback; onNo: oxCallback);
+procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50);
 
 implementation 
 
@@ -495,19 +503,22 @@ begin
 end;
 
 // dovanje stupca redni broj
-procedure GetDataTextOrdinalNumber(Sender: TcxCustomGridTableView; ARecordIndex: Integer; var AText: String);
-var AIndex: Integer;
+procedure TcxDisplayTextOrdinalHelper.GetDisplayTextOrdinalNumber(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; var AText: String);
+var row: Integer;
 begin
-    AIndex := TcxGridDBTableView(Sender).DataController.GetRowIndexByRecordIndex(ARecordIndex, False);
-    AText := IntToStr(AIndex + 1);
+    //row := Sender.DataController.GetRowIndexByRecordIndex(ARecord.RecordIndex, False);
+    //AText := IntToStr(row + 1);
+    AText := IntToStr(ARecord.Index + 1);
 end;
 
-procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Redni broj');
+procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50);
+var helper: TcxDisplayTextOrdinalHelper;
 begin
-    with oxAddColumn(grid, columnCaption) do
-    begin
-        GetDataText := GetDataTextOrdinalNumber;
+    helper := TcxDisplayTextOrdinalHelper.Create();
+    with oxAddColumn(grid, columnCaption, columnFieldName) do
+    begin                   
+        OnGetDisplayText := helper.GetDisplayTextOrdinalNumber;
     end;
-end
+end;
 
 end.
