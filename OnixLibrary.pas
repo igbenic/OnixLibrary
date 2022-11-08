@@ -1,6 +1,6 @@
 unit OnixLibrary;
 
-// verzija 2
+// verzija 3
 
 interface 
 
@@ -39,6 +39,7 @@ function oxNavigatorAcKey(name: String = 'bMenuDBNavigator'): String;
 function oxGetValue(ofElement: String): String;
 function oxAsAcKey(someText: String): String;
 function oxAsFloat(someText: String): extended;
+function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxRefreshDataset(dataSet: String);
@@ -47,7 +48,9 @@ procedure oxRedrawGrid(grid: String);
 procedure oxHackRefreshDataSet(dataSet: String);
 procedure oxHackRefreshGrid(grid: String; callback: oxCallback);
 procedure oxConfirm(what: String; onYes: oxCallback; onNo: oxCallback);
-procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50);
+procedure oxForceColumnIndex(forColumn: TcxGridDBColumn; index: Integer);
+procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
+procedure oxLogElementClassname(elementName: String);
 
 implementation 
 
@@ -511,14 +514,33 @@ begin
     AText := IntToStr(ARecord.Index + 1);
 end;
 
-procedure oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50);
+function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
 var helper: TcxDisplayTextOrdinalHelper;
 begin
     helper := TcxDisplayTextOrdinalHelper.Create();
-    with oxAddColumn(grid, columnCaption, columnFieldName) do
+    Result := oxAddColumn(grid, columnCaption, columnFieldName);
+    with Result do
     begin                   
         OnGetDisplayText := helper.GetDisplayTextOrdinalNumber;
     end;
+end;
+
+procedure oxForceColumnIndex(forColumn: TcxGridDBColumn; index: Integer);
+begin
+    raise Exception.Create('Nije implementirano!!! oxForceColumnIndex');
+end;
+
+procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
+begin
+    _macro.EventLogAdd(Format('Object "%s" has ClassName: "%s"', [oName, o.ClassName]));
+end;
+
+procedure oxLogElementClassname(elementName: String);
+var obj: TObject;
+begin
+    obj := Ares.FindComponent(elementName);
+    if obj <> nil then oxLogObjectClassName(obj, elementName)
+    else _macro.EventLogAdd(Format('Nije pronađen element: "%s"', [elementName]));
 end;
 
 end.
