@@ -23,7 +23,18 @@ type
     public 
         GetDisplayTextOrdinalNumber: procedure(Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord; var AText: String);
     end;
-    
+ 
+type
+    TLocalAfterClick = class(TObject)
+    private                        
+        oldEvent: TNotifyEvent;
+    public                   
+        AfterOldEvent: boolean;
+        Callback: oxCallback;
+        NewEvent: procedure(Sender: TObject);
+        constructor Create(oldEvent: TNotifyEvent);
+    end;
+       
 
 function oxSQLExp(SQL: String): String;
 function oxSQLExpWithParams(SQL: String; params: array of Variant): String;
@@ -40,6 +51,7 @@ function oxGetValue(ofElement: String): String;
 function oxAsAcKey(someText: String): String;
 function oxAsFloat(someText: String): extended;
 function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
+function oxGetButton(button: String): TcxButton;
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxRefreshDataset(dataSet: String);
@@ -52,6 +64,8 @@ procedure oxForceColumnIndex(forColumn: TcxGridDBColumn; index: Integer);
 procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
 procedure oxLogElementClassname(elementName: String);
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
+procedure oxBeforeButtonClick(button: String; callback: oxCallback);
+procedure oxAfterButtonClick(button: String; callback: oxCallback);
 
 implementation 
 
@@ -544,6 +558,31 @@ begin
     else _macro.EventLogAdd(Format('Nije pronađen element: "%s"', [elementName]));
 end;
 
+function oxGetButton(button: String): TcxButton;
+begin
+    Result := TcxButton(AresFindComponent(button, OwnerForm));
+end;
+
+// sve za onClickOverride
+
+constructor TLocalAfterClick.Create(oldEvent: TNotifyEvent);
+begin
+    self.oldEvent := oldEvent;
+end;
+
+procedure TLocalAfterClick.NewEvent(Sender: TObject);
+begin
+     if self.AfterOldEvent then
+     begin
+        if assigned(self.oldevent) then self.oldEvent(Sender);
+        self.callback;
+     end else 
+     begin      
+        self.callback;
+        if assigned(self.oldevent) then self.oldEvent(Sender);
+     end;
+end;
+
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 var alterSQL: String;
 begin
@@ -552,6 +591,32 @@ begin
         'ALTER TABLE ' + tableName + '      '                                          +
         'ADD ' + columnName + ' ' + sqlType + '';
     oxSQLExp(alterSQL);
+end;
+
+procedure oxBeforeButtonClick(button: String; callback: oxCallback);
+var localBeforeClick: TLocalAfterClick;
+begin
+    with oxGetButton(button) do
+    begin
+        localBeforeClick := TLocalAfterClick.Create(OnClick);
+        localBeforeClick.Callback := callback;
+        localBeforeClick.AfterOldEvent := false;    
+        OnClick := localBeforeClick.NewEvent;
+        _macro.eventlogadd('New event set before, for ' + button);
+    end;
+end;
+
+procedure oxAfterButtonClick(button: String; callback: oxCallback);
+var localAfterClick: TLocalAfterClick;
+begin
+    with oxGetButton(button) do
+    begin
+        localAfterClick := TLocalAfterClick.Create(OnClick);
+        localAfterClick.Callback := callback;
+        localAfterClick.AfterOldEvent := true;    
+        OnClick := localAfterClick.NewEvent;
+        _macro.eventlogadd('New event set after, for ' + button);
+    end;
 end;
 
 end.
