@@ -1,6 +1,6 @@
 unit OnixLibrary;
 
-// verzija 3
+// verzija 1
 
 interface 
 
@@ -51,6 +51,7 @@ procedure oxConfirm(what: String; onYes: oxCallback; onNo: oxCallback);
 procedure oxForceColumnIndex(forColumn: TcxGridDBColumn; index: Integer);
 procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
 procedure oxLogElementClassname(elementName: String);
+procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 
 implementation 
 
@@ -541,6 +542,16 @@ begin
     obj := Ares.FindComponent(elementName);
     if obj <> nil then oxLogObjectClassName(obj, elementName)
     else _macro.EventLogAdd(Format('Nije pronađen element: "%s"', [elementName]));
+end;
+
+procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
+var alterSQL: String;
+begin
+    alterSQL := 'IF NOT EXISTS (SELECT * FROM syscolumns                 '             +
+        'WHERE ID=OBJECT_ID(''' + tableName + ''') AND NAME=''' + columnName + ''')    '       +
+        'ALTER TABLE ' + tableName + '      '                                          +
+        'ADD ' + columnName + ' ' + sqlType + '';
+    oxSQLExp(alterSQL);
 end;
 
 end.
