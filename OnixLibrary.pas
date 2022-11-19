@@ -53,6 +53,7 @@ function oxAsFloat(someText: String): extended;
 function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
 function oxGetButton(button: String): TcxButton;
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxRefreshDataset(dataSet: String);
 procedure oxRefreshGrid(grid: String; keepRecord: boolean = false);
@@ -176,7 +177,7 @@ begin
             end;
         end else 
         begin
-            showmessage('DataSet ' + dataset + ' je ispravna komponenta, ali još ne postoji DataSource, pomakni čitanje SQL-a na kasniji korak u programu.');
+            showmessage('DataSet ' + dataset + ' je ispravna komponenta, ali joĹˇ ne postoji DataSource, pomakni ÄŤitanje SQL-a na kasniji korak u programu.');
         end;
     end else if c is TdlDataSource then
     begin
@@ -187,11 +188,11 @@ begin
         end;
     end else 
     begin
-        showmessage(dataset + ' nije pronađen kao dataset niti kao datasource!');
+        showmessage(dataset + ' nije pronaÄ‘en kao dataset niti kao datasource!');
     end; 
 end;
 
-// dataset može biti naziv dataseta, ali i grida, naći će ga
+// dataset moĹľe biti naziv dataseta, ali i grida, naÄ‡i Ä‡e ga
 function oxGetDataset(dataset: String): TdlDataSet;
 var c: TComponent;
 begin
@@ -203,12 +204,12 @@ begin
     else if c is TcxDBLookupComboBox then
     begin
         Result := TdlDataSet(TcxDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('Tražiš DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraćam DataSet od krajnjeg DataSeta.');
+        _macro.eventlogadd('TraĹľiĹˇ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraÄ‡am DataSet od krajnjeg DataSeta.');
     end
     else if c is TDaDBLookupComboBox then
     begin
         Result := TdlDataSet(TDaDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('Tražiš DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraćam DataSet od krajnjeg DataSeta.'); 
+        _macro.eventlogadd('TraĹľiĹˇ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraÄ‡am DataSet od krajnjeg DataSeta.'); 
     end 
     else if c is TdlDataSet then
     begin
@@ -268,15 +269,15 @@ begin
     end;
 end;
 
-procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 var localAfterOpen: TLocalAfterOpen;
 begin
     with oxGetDataset(dataset) do
     begin
-        localAfterOpen := TLocalAfterOpen.Create(AfterPost);
+        localAfterOpen := TLocalAfterOpen.Create(BeforePost);
         localAfterOpen.Callback := callback;
         localAfterOpen.AfterOldEvent := afterOldEvent;    
-        AfterPost := localAfterOpen.NewEvent;
+        BeforePost := localAfterOpen.NewEvent;
         _macro.eventlogadd('New event set for ' + dataset);
     end;
 end;
@@ -287,6 +288,19 @@ begin
     begin         
         Refresh;
         _macro.eventlogadd(dataset + ' refreshed');
+    end;
+end;
+
+procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+var localAfterOpen: TLocalAfterOpen;
+begin
+    with oxGetDataset(dataset) do
+    begin
+        localAfterOpen := TLocalAfterOpen.Create(AfterPost);
+        localAfterOpen.Callback := callback;
+        localAfterOpen.AfterOldEvent := afterOldEvent;    
+        AfterPost := localAfterOpen.NewEvent;
+        _macro.eventlogadd('New event set for ' + dataset);
     end;
 end;
 
@@ -471,7 +485,7 @@ begin
     comp := OwnerForm.FindComponent(name);
     if not assigned(comp) then
     begin
-        showmessage(name + ' nije ispravan navigator! nije pronađen...');
+        showmessage(name + ' nije ispravan navigator! nije pronaÄ‘en...');
     end else
     begin
         Result := TNavigator3(comp).datasource.dataset.FieldByName('ackey').asstring;
@@ -485,16 +499,16 @@ begin
     
     if not assigned(comp) then
     begin               
-        showmessage(ofElement + ' nije pronađen!!!');
+        showmessage(ofElement + ' nije pronaÄ‘en!!!');
     end else
     begin    
-        _macro.eventlogadd('Element ' + ofElement + ' je pronađen, testiram vrstu'); // ovdje naredati sve moguće class opcije
+        _macro.eventlogadd('Element ' + ofElement + ' je pronaÄ‘en, testiram vrstu'); // ovdje naredati sve moguÄ‡e class opcije
         if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
-    _macro.eventlogadd('Element ' + ofElement + ' obrađen s vrijednošću: ' + Result);
+    _macro.eventlogadd('Element ' + ofElement + ' obraÄ‘en s vrijednoĹˇÄ‡u: ' + Result);
 end;
 
 function oxAsAcKey(someText: String): String;
@@ -555,7 +569,7 @@ var obj: TObject;
 begin
     obj := Ares.FindComponent(elementName);
     if obj <> nil then oxLogObjectClassName(obj, elementName)
-    else _macro.EventLogAdd(Format('Nije pronađen element: "%s"', [elementName]));
+    else _macro.EventLogAdd(Format('Nije pronaÄ‘en element: "%s"', [elementName]));
 end;
 
 function oxGetButton(button: String): TcxButton;
