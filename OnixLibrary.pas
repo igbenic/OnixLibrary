@@ -67,6 +67,7 @@ procedure oxLogElementClassname(elementName: String);
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 procedure oxBeforeButtonClick(button: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
+function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 
 implementation 
 
@@ -630,6 +631,24 @@ begin
         localAfterClick.AfterOldEvent := true;    
         OnClick := localAfterClick.NewEvent;
         _macro.eventlogadd('New event set after, for ' + button);
+    end;
+end;
+
+function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
+var columnIndex: Integer;
+    column: TcxGridColumn;
+begin
+    with oxGetGrid(gridOrDSName) do
+    begin                
+        column := GetColumnByFieldName(fieldName);
+        if column <> nil then
+        begin
+            columnIndex := column.Index;
+            _macro.EventLogAdd('Column index: ' + inttostr(columnIndex));
+            Result := Controller.FocusedRow.Values[columnIndex];
+        end else begin
+            showmessage(fieldName + ' ne postoji na ' + gridOrDSName + '!');
+        end;
     end;
 end;
 
