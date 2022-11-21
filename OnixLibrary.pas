@@ -67,6 +67,7 @@ procedure oxLogElementClassname(elementName: String);
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 procedure oxBeforeButtonClick(button: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
+procedure oxPrintComponent(component: TComponent; prefix: String = '');
 function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 
 implementation 
@@ -660,6 +661,22 @@ begin
             showmessage(fieldName + ' ne postoji na ' + gridOrDSName + '!');
         end;
     end;
+end;
+
+procedure oxPrintComponent(component: TComponent; prefix: String = '');
+var index: Integer;
+begin
+    if component <> nil then
+    begin
+        _macro.EventLogAdd(Format('%s%s', [prefix, component.Name]));
+        for index := 0 to component.ComponentCount - 1 do
+        begin
+            oxPrintComponent(component.Components[index], prefix + #9);
+        end; 
+    end else
+    begin
+        _macro.EventLogAdd(Format('%s%s', [prefix, 'Tražena komponenta nije postavljena']));
+    end;   
 end;
 
 end.
