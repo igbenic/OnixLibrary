@@ -226,6 +226,10 @@ begin
     else if c is TdlDataSet then
     begin
         Result := TdlDataSet(c);
+    end 
+    else if c is TcxGridDBBandedTableView then
+    begin
+        Result := TdlDataSet(TcxGridDBBandedTableView(c).DataController.DataSet);
     end else
     begin
         showmessage(dataset + ' nije TDataSet!');
