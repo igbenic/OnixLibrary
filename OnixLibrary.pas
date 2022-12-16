@@ -4,7 +4,7 @@ unit OnixLibrary;
 
 interface 
 
-uses dlComponents, cxgrid, controls, Variants, dlDatabase, Sysutils, cxCalc, Forms, dialogs, Classes;
+uses dlComponents, cxgrid, controls, Variants, dlDatabase, Sysutils, cxCalc, Forms, dialogs, Classes, menus;
 
 type oxCallback = procedure(); 
 type 
@@ -73,6 +73,7 @@ procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
 procedure oxLogElementClassname(elementName: String);
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 procedure oxBeforeButtonClick(button: String; callback: oxCallback);
+procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: String; caption: String; relativeCoordinates: array of Integer; onClickCallback: oxCallback): TdlcxButton;
@@ -605,6 +606,11 @@ begin
     Result := TcxButton(AresFindComponent(button, OwnerForm));
 end;
 
+function oxGetPopup(popup: String): TPopupMenu;
+begin
+    Result := TPopupMenu(AresFindComponent(popup, OwnerForm)); 
+end;
+
 // sve za onClickOverride
 
 constructor TLocalAfterClick.Create(oldEvent: TNotifyEvent);
@@ -645,6 +651,19 @@ begin
         localBeforeClick.AfterOldEvent := false;    
         OnClick := localBeforeClick.NewEvent;
         _macro.eventlogadd('New event set before, for ' + button);
+    end;
+end;
+
+procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
+var localBeforeClick: TLocalAfterClick;
+begin
+    with oxGetPopup(popupName) do
+    begin
+        localBeforeClick := TLocalAfterClick.Create(OnPopup);
+        localBeforeClick.Callback := callback;
+        localBeforeClick.AfterOldEvent := false;    
+        OnPopup := localBeforeClick.NewEvent;
+        _macro.eventlogadd('New event set before, for ' + popupName);
     end;
 end;
 
