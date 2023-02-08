@@ -534,6 +534,7 @@ begin
         _macro.eventlogadd('Element ' + ofElement + ' je pronaÄ‚â€žĂ˘â‚¬Âen, testiram vrstu'); // ovdje naredati sve moguÄ‚â€žĂ˘â‚¬Ë‡e class opcije
         if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
+	else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
