@@ -59,6 +59,7 @@ function oxAsAcKey(someText: String): String;
 function oxAsFloat(someText: String): extended;
 function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
 function oxGetButton(button: String): TcxButton;
+function oxConfirmBool(what: String): Boolean;
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -502,6 +503,27 @@ begin
         begin       
             _macro.eventlogadd('Executing no');
             onNo();
+        end;
+    except on E: Exception do
+        _macro.eventlogadd('Dialog error: ' + E.Message);
+    end;
+end;
+
+function oxConfirmBool(what: String): Boolean;
+var res: Integer;
+begin
+    result := false;
+    _macro.eventlogadd('Executing dialog');
+    try
+        res := Integer(Dialogs.MessageDlg(what, mtConfirmation, [mbYes, mbNo], 0, mbYes));
+        if (res = mrYes) then
+        begin       
+            _macro.eventlogadd('Executing yes');
+            result := true;
+        end;
+        if (res = mrNo) then 
+        begin       
+            _macro.eventlogadd('Executing no');
         end;
     except on E: Exception do
         _macro.eventlogadd('Dialog error: ' + E.Message);
