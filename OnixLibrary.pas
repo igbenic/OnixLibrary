@@ -79,6 +79,8 @@ procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: String; caption: String; relativeCoordinates: array of Integer; onClickCallback: oxCallback): TdlcxButton;
 function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
+function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
+function oxColumnExists(tableName: String; columnName: String): boolean;
 
 implementation 
 
@@ -780,6 +782,24 @@ begin
     end else
     begin
         showmessage('Unesite ispravan broj argumenata za relativne koordinate gumba u ' + intoComponentName + '. prazno [] ili [10, 0] odnosno [top, left] unutar ' + intoComponentName);
+    end;
+end;
+
+
+function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
+begin
+    Result := false;
+    
+    if v <> null then
+    begin
+        if TRIM(v) <> '' then
+        begin              
+            if (not zeroIsFalsy) or 
+               (zeroIsFalsy and (TRIM(v) <> '0')) then
+            begin
+                Result := true;
+            end;
+        end;
     end;
 end;
 
