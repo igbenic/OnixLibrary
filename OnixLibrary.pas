@@ -64,8 +64,8 @@ function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: Str
 function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
 function oxColumnExists(tableName: String; columnName: String): boolean;
-function oxDrillClassParent(c: TClass): TClass; 
 function oxDateToSQLString(date: TDateTime): String;
+procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -86,13 +86,14 @@ procedure oxPrintComponent(component: TComponent; prefix: String = '');
 
 implementation 
 
-function oxDrillClassParent(c: TClass): TClass; 
+procedure oxDrillClassParent(obj: TObject); 
+var
+  cls: TClass;
 begin
-    if (c <> nil) and (c.ClassParent <> nil) then
-    begin                       
-        _macro.EventLogAdd(c.ClassName);
-        Result := c.ClassParent;
-    end;
+  cls := obj.ClassType;
+  _macro.EventLogAdd(cls.ClassName);
+  if Assigned(cls.ClassParent) then
+    oxDrillClassParent(cls.ClassParent.NewInstance);
 end;
 
 function oxDateToSQLString(date: TDateTime): String;
