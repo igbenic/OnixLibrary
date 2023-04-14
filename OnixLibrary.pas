@@ -60,6 +60,12 @@ function oxAsFloat(someText: String): extended;
 function oxAddOrdinalNumberColumn(grid: String; columnCaption: String = 'Rbr.'; columnFieldName: String = '_ordinal_column_internal_ox'; width: integer = 50): TcxGridDBColumn;
 function oxGetButton(button: String): TcxButton;
 function oxConfirmBool(what: String): Boolean;
+function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: String; caption: String; relativeCoordinates: array of Integer; onClickCallback: oxCallback): TdlcxButton;
+function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
+function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
+function oxColumnExists(tableName: String; columnName: String): boolean;
+function oxDrillClassParent(c: TClass): TClass; 
+function oxDateToSQLString(date: TDateTime): String;
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -77,12 +83,22 @@ procedure oxBeforeButtonClick(button: String; callback: oxCallback);
 procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
-function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: String; caption: String; relativeCoordinates: array of Integer; onClickCallback: oxCallback): TdlcxButton;
-function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
-function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
-function oxColumnExists(tableName: String; columnName: String): boolean;
 
 implementation 
+
+function oxDrillClassParent(c: TClass): TClass; 
+begin
+    if (c <> nil) and (c.ClassParent <> nil) then
+    begin                       
+        _macro.EventLogAdd(c.ClassName);
+        Result := c.ClassParent;
+    end;
+end;
+
+function oxDateToSQLString(date: TDateTime): String;
+begin
+    Result := FormatDateTime('yyyy-mm-dd"T"hh:nn:ss', date);
+end;
 
 // sqlexp(query)
 function oxSQLExp(sql:string):string
