@@ -6,6 +6,29 @@ interface
 
 uses dlComponents, cxgrid, controls, Variants, dlDatabase, Sysutils, cxCalc, Forms, dialogs, Classes, menus;
 
+
+type TCheckboxListOnix = class(TComponent)
+    private                 
+        parent: TComponent;
+        scrollBox: TcxScrollBox;
+        popupMenu: TPopupMenu;
+	totalScrollboxHeight: Integer;
+	values: TStringList;
+        procedure popupMenuPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+        procedure scrollboxMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+        procedure scrollboxMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+        procedure addMenuItems();
+        procedure checkAllMenuItemClicked(Sender: TObject);
+        procedure uncheckAllMenuItemClicked(Sender: TObject);
+        procedure checkInverseMenuItemClicked(Sender: TObject);
+    public
+        constructor Create(AParent: TComponent); override;
+        procedure Add(AKey: string; AValue: string; AChecked: boolean = false);
+        function GetSelectedKeys():TStringList;
+        function GetSelectedKeysJoined(by: String = ','):string;
+        function GetSelectedKeysJoinedAndQuoted(by: String = ','):string;
+    end;
+
 type oxCallback = procedure(); 
 type 
     TLocalAfterOpen = class(TObject)
@@ -85,6 +108,195 @@ procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 
 implementation 
+
+
+constructor TCheckboxListOnix.Create(AParent: TComponent); override;
+begin    
+    totalScrollboxHeight := 0;
+    parent := AParent;
+    values := TStringList.Create();
+    popupMenu := TPopupMenu.Create(AParent);
+    addMenuItems();
+    scrollbox := TcxScrollBox.Create(AParent);
+    with scrollbox do
+    begin  
+        Align := alClient;
+        Parent := AParent;
+        OnContextPopup := popupMenuPopup;
+        OnMouseWheelDown := scrollboxMouseWheelDown;
+        OnMouseWheelUp := scrollboxMouseWheelUp;
+    end;
+end;
+
+
+procedure TCheckboxListOnix.addMenuItems();
+var currentMenuItem: TMenuItem;
+begin
+    currentMenuItem := TMenuItem.Create(popupMenu);
+    currentMenuItem.Caption := 'Izaberi sve';
+    currentMenuItem.OnClick := checkAllMenuItemClicked;
+    popupMenu.Items.Add(currentMenuItem);
+    
+    currentMenuItem := TMenuItem.Create(popupMenu);
+    currentMenuItem.Caption := 'Odznači sve';
+    currentMenuItem.OnClick := uncheckAllMenuItemClicked;
+    popupMenu.Items.Add(currentMenuItem);
+    
+    currentMenuItem := TMenuItem.Create(popupMenu);
+    currentMenuItem.Caption := 'Izaberi inverzno';
+    currentMenuItem.OnClick := checkInverseMenuItemClicked;
+    popupMenu.Items.Add(currentMenuItem);
+end;
+
+procedure TCheckboxListOnix.checkAllMenuItemClicked();
+var
+  i: Integer;    
+  Child: TControl;
+begin
+    for i := 0 to scrollbox.ControlCount - 1 do
+    begin
+        Child := scrollbox.Controls[i];
+        
+        if Child is TcxCheckbox then
+        begin
+            with Child as TcxCheckBox do
+            begin
+                Checked := true;
+            end;
+        end;
+    end;
+end;
+
+procedure TCheckboxListOnix.uncheckAllMenuItemClicked();
+var
+  i: Integer;    
+  Child: TControl;
+begin
+    for i := 0 to scrollbox.ControlCount - 1 do
+    begin
+        Child := scrollbox.Controls[i];
+        
+        if Child is TcxCheckbox then
+        begin
+            with Child as TcxCheckBox do
+            begin
+                Checked := false;
+            end;
+        end;
+    end;
+end;
+
+procedure TCheckboxListOnix.checkInverseMenuItemClicked();
+var
+  i: Integer;    
+  Child: TControl;
+begin
+    for i := 0 to scrollbox.ControlCount - 1 do
+    begin
+        Child := scrollbox.Controls[i];
+        
+        if Child is TcxCheckbox then
+        begin
+            with Child as TcxCheckBox do
+            begin
+                Checked := not Checked;
+            end;
+        end;
+    end;
+end;
+
+procedure TCheckboxListOnix.Add(AKey: string; AValue: string; AChecked: boolean = false);
+begin
+    if values.IndexOf(AKey) <> -1 then
+    begin
+        _macro.EventLogAdd('TCheckboxListOnix: Već postoji ključ: ' + AKey);
+        exit; 
+    end;
+
+    with TdlcxCheckBox.Create(scrollbox) do
+    begin                  
+        Parent := scrollbox;
+        Caption := AValue;
+        values.Add(AKey);
+        Tag := values.Count; 
+        Top := totalScrollboxHeight;
+        totalScrollboxHeight := totalScrollboxHeight + Height;
+        Checked := AChecked;
+    end;
+end;
+
+procedure TCheckboxListOnix.popupMenuPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+var pt: TPoint;
+begin
+    pt := TcxScrollBox(Sender).ClientToScreen(MousePos);
+    popupMenu.Popup(pt.X, pt.Y);
+end;
+
+procedure TCheckboxListOnix.scrollboxMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);  
+begin  
+  TcxScrollBox(Sender).VertScrollBar.Position := TcxScrollBox(Sender).VertScrollBar.Position + 1;  
+end;  
+ 
+procedure TCheckboxListOnix.scrollboxMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);  
+begin  
+  TcxScrollBox(Sender).VertScrollBar.Position := TcxScrollBox(Sender).VertScrollBar.Position - 1;  
+end;
+
+function TCheckboxListOnix.GetSelectedKeys():TStringList;
+var selectedKeys: TStringList;
+  i: Integer;    
+  Child: TControl;
+begin
+    selectedKeys := TStringList.Create();
+    for i := 0 to scrollbox.ControlCount - 1 do
+    begin
+        Child := scrollbox.Controls[i];
+        
+        if Child is TcxCheckbox then
+        begin
+            with Child as TcxCheckBox do
+            begin
+                 if Checked then
+                 begin
+                    selectedKeys.Add(values[Tag - 1]);
+                 end;
+            end;
+        end;
+    end;
+    result := selectedKeys;
+end;
+
+function TCheckboxListOnix.GetSelectedKeysJoined(by: String = ','):string;
+var selectedKeys: TStringList;
+    key: string;
+begin
+    result := '';
+    selectedKeys := GetSelectedKeys();
+    for key in selectedKeys do
+    begin
+        result := result + key;
+        if not (selectedKeys.IndexOf(key) = selectedKeys.Count - 1) then
+        begin
+            result := result + by;
+        end;
+    end;
+end;
+
+function TCheckboxListOnix.GetSelectedKeysJoinedAndQuoted(by: String = ','):string;
+var selectedKeys: TStringList;
+    key: string;
+begin
+    result := '';
+    selectedKeys := GetSelectedKeys();
+    for key in selectedKeys do
+    begin
+        result := result + QuotedStr(key);
+        if not (selectedKeys.IndexOf(key) = selectedKeys.Count - 1) then
+        begin
+            result := result + by;
+        end;
+    end;
+end;
 
 procedure oxDrillClassParent(obj: TObject); 
 var
