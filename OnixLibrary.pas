@@ -111,7 +111,9 @@ procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
 procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
+procedure oxAddToNavigatorAt(field: String; fieldLen: Integer; fieldName: String; fieldF: String; atIndex: Integer = -1);
 procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
+procedure oxAddDefToNavigatorAt(def: String; atIndex: Integer = -1);
 
 implementation 
 
@@ -134,11 +136,22 @@ begin
     end;
 end;
 
+procedure oxAddToNavigatorAt(field: String; fieldLen: Integer; fieldName: String; fieldF: String; atIndex: Integer = -1);
+begin
+    oxAddToNavigator(field, fieldLen, fieldName, fieldF, 'bMenuDBNavigator', atIndex);
+end;
+
+procedure oxAddDefToNavigatorAt(def: String; atIndex: Integer = -1);
+begin
+    oxAddDefToNavigator(def, 'bMenuDBNavigator', atIndex);
+end;
+
 procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
 begin
     oxAddDefToNavigator(
         field + #9 + IntToStr(fieldLen) + #9 + fieldName + #9 + fieldF,
-        navigator
+        navigator,
+        atIndex
     );
 end;
 
