@@ -109,6 +109,7 @@ procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
+procedure oxAddToNavigator(navigator: String; defOrField: String; fieldChars: Integer = null; fieldDisplayName: String = null; fieldF: String = null);
 
 implementation 
 
@@ -129,6 +130,10 @@ begin
         OnMouseWheelDown := scrollboxMouseWheelDown;
         OnMouseWheelUp := scrollboxMouseWheelUp;
     end;
+end;
+
+procedure oxAddToNavigator(navigator: String; defOrField: String; fieldChars: Integer = null; fieldDisplayName: String = null; fieldF: String = null);
+begin
 end;
 
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
@@ -175,7 +180,7 @@ begin
     StringList.SaveToFile(FileName);
     except on E:Exception do
         begin
-            _macro.EventLogAdd('Greška: ' + E.message);
+            _macro.EventLogAdd('GreĹˇka: ' + E.message);
         end
     end;
   finally
@@ -192,7 +197,7 @@ begin
     popupMenu.Items.Add(currentMenuItem);
     
     currentMenuItem := TMenuItem.Create(popupMenu);
-    currentMenuItem.Caption := 'OdznaÄŤi sve';
+    currentMenuItem.Caption := 'OdznaĂ„Ĺ¤i sve';
     currentMenuItem.OnClick := uncheckAllMenuItemClicked;
     popupMenu.Items.Add(currentMenuItem);
     
@@ -310,7 +315,7 @@ procedure TCheckboxListOnix.Add(AKey: string; AValue: string; AChecked: boolean 
 begin
     if values.IndexOf(AKey) <> -1 then
     begin
-        _macro.EventLogAdd('TCheckboxListOnix: VeÄ‡ postoji kljuÄŤ: ' + AKey);
+        _macro.EventLogAdd('TCheckboxListOnix: VeĂ„â€ˇ postoji kljuĂ„Ĺ¤: ' + AKey);
         exit; 
     end;
 
@@ -531,7 +536,7 @@ begin
             end;
         end else 
         begin
-            showmessage('DataSet ' + dataset + ' je ispravna komponenta, ali joÄ‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡ ne postoji DataSource, pomakni Ă„â€šĂ˘â‚¬ĹľĂ„Ä…Ă‚Â¤itanje SQL-a na kasniji korak u programu.');
+            showmessage('DataSet ' + dataset + ' je ispravna komponenta, ali joĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬Ä…Ä‚ËĂ˘â€šÂ¬Ă‹â€ˇ ne postoji DataSource, pomakni Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľÄ‚â€žĂ„â€¦Ä‚â€šĂ‚Â¤itanje SQL-a na kasniji korak u programu.');
         end;
     end else if c is TdlDataSource then
     begin
@@ -542,11 +547,11 @@ begin
         end;
     end else 
     begin
-        showmessage(dataset + ' nije pronaĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen kao dataset niti kao datasource!');
+        showmessage(dataset + ' nije pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen kao dataset niti kao datasource!');
     end; 
 end;
 
-// dataset moÄ‚â€žĂ„â€¦Ä‚â€žĂ„Äľe biti naziv dataseta, ali i grida, naĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇi Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇe ga
+// dataset moĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ„Äľe biti naziv dataseta, ali i grida, naÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡i Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡e ga
 function oxGetDataset(dataset: String): TdlDataSet;
 var c: TComponent;
 begin
@@ -558,12 +563,12 @@ begin
     else if c is TcxDBLookupComboBox then
     begin
         Result := TdlDataSet(TcxDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('TraÄ‚â€žĂ„â€¦Ä‚â€žĂ„ÄľiÄ‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇam DataSet od krajnjeg DataSeta.');
+        _macro.eventlogadd('TraĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ„ÄľiĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬Ä…Ä‚ËĂ˘â€šÂ¬Ă‹â€ˇ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡am DataSet od krajnjeg DataSeta.');
     end
     else if c is TDaDBLookupComboBox then
     begin
         Result := TdlDataSet(TDaDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('TraÄ‚â€žĂ„â€¦Ä‚â€žĂ„ÄľiÄ‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇam DataSet od krajnjeg DataSeta.'); 
+        _macro.eventlogadd('TraĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ„ÄľiĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬Ä…Ä‚ËĂ˘â€šÂ¬Ă‹â€ˇ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? VraÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡am DataSet od krajnjeg DataSeta.'); 
     end 
     else if c is TdlDataSet then
     begin
@@ -868,7 +873,7 @@ begin
     comp := OwnerForm.FindComponent(name);
     if not assigned(comp) then
     begin
-        showmessage(name + ' nije ispravan navigator! nije pronaĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen...');
+        showmessage(name + ' nije ispravan navigator! nije pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen...');
     end else
     begin
         Result := TNavigator3(comp).datasource.dataset.FieldByName('ackey').asstring;
@@ -882,17 +887,17 @@ begin
     
     if not assigned(comp) then
     begin               
-        showmessage(ofElement + ' nije pronaĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen!!!');
+        showmessage(ofElement + ' nije pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen!!!');
     end else
     begin    
-        _macro.eventlogadd('Element ' + ofElement + ' je pronaĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen, testiram vrstu'); // ovdje naredati sve moguĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇe class opcije
+        _macro.eventlogadd('Element ' + ofElement + ' je pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen, testiram vrstu'); // ovdje naredati sve moguÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡e class opcije
         if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
 	else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
-    _macro.eventlogadd('Element ' + ofElement + ' obraĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen s vrijednoÄ‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‹â€ˇu: ' + Result);
+    _macro.eventlogadd('Element ' + ofElement + ' obraÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen s vrijednoĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬Ä…Ä‚ËĂ˘â€šÂ¬Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€ąĂ˘â‚¬Ë‡u: ' + Result);
 end;
 
 function oxAsAcKey(someText: String): String;
@@ -953,7 +958,7 @@ var obj: TObject;
 begin
     obj := Ares.FindComponent(elementName);
     if obj <> nil then oxLogObjectClassName(obj, elementName)
-    else _macro.EventLogAdd(Format('Nije pronaĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Âen element: "%s"', [elementName]));
+    else _macro.EventLogAdd(Format('Nije pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen element: "%s"', [elementName]));
 end;
 
 function oxGetButton(button: String): TcxButton;
@@ -1065,7 +1070,7 @@ begin
         end; 
     end else
     begin
-        _macro.EventLogAdd(Format('%s%s', [prefix, 'TraÄąÄľena komponenta nije postavljena']));
+        _macro.EventLogAdd(Format('%s%s', [prefix, 'TraĂ„Ä…Ă„Äľena komponenta nije postavljena']));
     end;   
 end;
 
