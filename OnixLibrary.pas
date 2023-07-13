@@ -90,6 +90,7 @@ function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
 function oxColumnExists(tableName: String; columnName: String): boolean;
 function oxDateToSQLString(date: TDateTime): String;
+function oxNavigator(name: String = 'bMenuDBNavigator'): TNavigator3;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -109,7 +110,8 @@ procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
-procedure oxAddToNavigator(navigator: String; defOrField: String; fieldChars: Integer = null; fieldDisplayName: String = null; fieldF: String = null);
+procedure oxAddToNavigator(navigator: String = 'bMenuDBNavigator'; field: String; fieldLen: Integer; fieldName: String; fieldF: String);
+procedure oxAddDefToNavigator(navigator: String = 'bMenuDBNavigator'; def: String);
 
 implementation 
 
@@ -132,8 +134,24 @@ begin
     end;
 end;
 
-procedure oxAddToNavigator(navigator: String; defOrField: String; fieldChars: Integer = null; fieldDisplayName: String = null; fieldF: String = null);
+procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator');
 begin
+    oxAddDefToNavigator(
+        field + #9 + IntToStr(fieldLen) + #9 + fieldName + #9 + fieldF,
+        navigator
+    );
+end;
+
+procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator');
+var nav: TNavigator3;
+    sl: TStringList;
+begin
+    nav := oxNavigator(navigator);
+    sl := TStringList.Create;
+    sl.CommaText := nav.LookupSelected.CommaText;
+    nav.LookupSelected.Clear;
+    sl.Add(def); 
+    nav.LookupSelected := sl;
 end;
 
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
@@ -867,6 +885,11 @@ begin
     end;
 end;
 
+function oxNavigator(name: String = 'bMenuDBNavigator'): TNavigator3;
+begin
+    Result := TNavigator3(OwnerForm.FindComponent(name));
+end;
+
 function oxNavigatorAcKey(name: String = 'bMenuDBNavigator'): String;
 var comp: TComponent;
 begin
@@ -876,7 +899,7 @@ begin
         showmessage(name + ' nije ispravan navigator! nije pronaÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Âen...');
     end else
     begin
-        Result := TNavigator3(comp).datasource.dataset.FieldByName('ackey').asstring;
+        Result := oxNavigator(name).datasource.dataset.FieldByName('ackey').asstring;
     end;
 end;
 
