@@ -110,8 +110,8 @@ procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
-procedure oxAddToNavigator(navigator: String = 'bMenuDBNavigator'; field: String; fieldLen: Integer; fieldName: String; fieldF: String);
-procedure oxAddDefToNavigator(navigator: String = 'bMenuDBNavigator'; def: String);
+procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator');
+procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator');
 
 implementation 
 
