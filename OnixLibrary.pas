@@ -110,8 +110,8 @@ procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
 procedure oxDataSetToCSV(DataSet: TdlDataSet; const FileName: string; const Delimiter: string = ';'; const QuoteEverything: boolean = false);
-procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator');
-procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator');
+procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
+procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
 
 implementation 
 
@@ -134,7 +134,7 @@ begin
     end;
 end;
 
-procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator');
+procedure oxAddToNavigator(field: String; fieldLen: Integer; fieldName: String; fieldF: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
 begin
     oxAddDefToNavigator(
         field + #9 + IntToStr(fieldLen) + #9 + fieldName + #9 + fieldF,
@@ -142,7 +142,7 @@ begin
     );
 end;
 
-procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator');
+procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator'; atIndex: Integer = -1);
 var nav: TNavigator3;
     sl: TStringList;
 begin
@@ -150,7 +150,10 @@ begin
     sl := TStringList.Create;
     sl.CommaText := nav.LookupSelected.CommaText;
     nav.LookupSelected.Clear;
-    sl.Add(def); 
+    if atIndex = -1 then
+        sl.Add(def)
+    else
+        sl.Insert(atIndex, def);
     nav.LookupSelected := sl;
 end;
 
