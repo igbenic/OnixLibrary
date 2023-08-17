@@ -101,7 +101,7 @@ function oxConfirmBool(what: String): Boolean;
 function oxAddButtonInto(intoComponentName: String; inLineWithComponentName: String; caption: String; relativeCoordinates: array of Integer; onClickCallback: oxCallback): TdlcxButton;
 function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
-function oxDTruthy(v: Date): boolean;
+function oxDTruthy(v: TDateTime): boolean;
 function oxColumnExists(tableName: String; columnName: String): boolean;
 function oxDateToSQLString(date: TDateTime): String;
 function oxNavigator(name: String = 'bMenuDBNavigator'): TNavigator3;
@@ -1281,7 +1281,7 @@ begin
     end;
 end;
 
-function oxDTruthy(v: Date): boolean;
+function oxDTruthy(v: TDateTime): boolean;
 begin
     Result := false;
     
