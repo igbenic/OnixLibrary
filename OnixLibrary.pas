@@ -109,6 +109,8 @@ function oxSQLStepResult(stepId: Integer): String;
 function oxSQLStepResultWithParams(stepId: Integer; params: array of Variant): String;
 function oxSQLStepResultAnotherAres(stepId: Integer; aresAcKey: String): String;
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
+function IsWeekend(ADate: TDateTime): Boolean;
+function GetFirstBusinessDayAfterToday: TDateTime;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -135,6 +137,26 @@ procedure oxAddDefToNavigatorAt(def: String; atIndex: Integer = -1);
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
 
 implementation 
+
+function GetFirstBusinessDayAfterToday: TDateTime;
+var
+  DateAfterToday: TDateTime;
+begin
+  DateAfterToday := IncDay(Now, 1);  // Start with tomorrow
+  while IsWeekend(DateAfterToday) do
+  begin
+    DateAfterToday := IncDay(DateAfterToday, 1);
+  end;
+  Result := DateAfterToday;
+end;
+
+function IsWeekend(ADate: TDateTime): Boolean;
+var
+  DayOfWeek: Integer;
+begin
+  DayOfWeek := DayOfTheWeek(ADate);
+  Result := (DayOfWeek = DaySaturday) or (DayOfWeek = DaySunday);
+end;
 
 function oxSQLStepResultAnotherAres( stepId: Integer; aresAcKey: String = nil): String;
 var stepSQL: String;
@@ -283,7 +305,7 @@ begin
     StringList.SaveToFile(FileName);
     except on E:Exception do
         begin
-            _macro.EventLogAdd('Greška: ' + E.message);
+            _macro.EventLogAdd('Greï¿½ka: ' + E.message);
         end
     end;
   finally
@@ -300,7 +322,7 @@ begin
     popupMenu.Items.Add(currentMenuItem);
     
     currentMenuItem := TMenuItem.Create(popupMenu);
-    currentMenuItem.Caption := 'Odznaèi sve';
+    currentMenuItem.Caption := 'Odznaï¿½i sve';
     currentMenuItem.OnClick := uncheckAllMenuItemClicked;
     popupMenu.Items.Add(currentMenuItem);
     
@@ -442,7 +464,7 @@ var cb: TdlcxCheckBox;
 begin
     if values.IndexOf(AKey) <> -1 then
     begin
-        _macro.EventLogAdd('TCheckboxListOnix: Veæ postoji kljuè: ' + AKey);
+        _macro.EventLogAdd('TCheckboxListOnix: Veï¿½ postoji kljuï¿½: ' + AKey);
         exit; 
     end;
 
@@ -674,7 +696,7 @@ begin
             end;
         end else 
         begin
-            showmessage('DataSet  je ispravna komponenta, ali još: ne postoji DataSource, pomakni èitanje SQL-a na kasniji korak u programu.');
+            showmessage('DataSet  je ispravna komponenta, ali joï¿½: ne postoji DataSource, pomakni ï¿½itanje SQL-a na kasniji korak u programu.');
         end;
     end else if c is TdlDataSource then
     begin
@@ -685,11 +707,11 @@ begin
         end;
     end else 
     begin
-        showmessage('dataset +  nije pronaðen kao dataset niti kao datasource!');
+        showmessage('dataset +  nije pronaï¿½en kao dataset niti kao datasource!');
     end; 
 end;
 
-// dataset može biti naziv dataseta, ali i grida, bilo èega što je ovdje implementirano if else if...'
+// dataset moï¿½e biti naziv dataseta, ali i grida, bilo ï¿½ega ï¿½to je ovdje implementirano if else if...'
 function oxGetDataset(dataset: String): TdlDataSet;
 var c: TComponent;
 begin
@@ -701,12 +723,12 @@ begin
     else if c is TcxDBLookupComboBox then
     begin
         Result := TdlDataSet(TcxDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('Tražiš DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraæam DataSet od krajnjeg DataSeta.');
+        _macro.eventlogadd('Traï¿½iï¿½ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraï¿½am DataSet od krajnjeg DataSeta.');
     end
     else if c is TDaDBLookupComboBox then
     begin
         Result := TdlDataSet(TDaDBLookupComboBox(c).DataBinding.DataSource.DataSet);
-        _macro.eventlogadd('Tražiš DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraæam DataSet od krajnjeg DataSeta.');
+        _macro.eventlogadd('Traï¿½iï¿½ DataSet od Lookupa ili od krajnjeg DataSeta za ' + dataset + '? Vraï¿½am DataSet od krajnjeg DataSeta.');
     end 
     else if c is TdlDataSet then
     begin
@@ -1016,7 +1038,7 @@ begin
     comp := OwnerForm.FindComponent(name);
     if not assigned(comp) then
     begin
-        showmessage(name + ' nije ispravan navigator! nije pronaðen...');
+        showmessage(name + ' nije ispravan navigator! nije pronaï¿½en...');
     end else
     begin
         Result := oxNavigator(name).datasource.dataset.FieldByName('ackey').asstring;
@@ -1030,17 +1052,17 @@ begin
     
     if not assigned(comp) then
     begin               
-        showmessage(ofElement + ' nije pronaðen');
+        showmessage(ofElement + ' nije pronaï¿½en');
     end else
     begin    
-        _macro.eventlogadd('Element '  + ofElement + ' je pronaðen, testiram vrstu'); // ovdje naredati sve moguæe class opcije za koje želimo impelentirati traženje vrijednosti
+        _macro.eventlogadd('Element '  + ofElement + ' je pronaï¿½en, testiram vrstu'); // ovdje naredati sve moguï¿½e class opcije za koje ï¿½elimo impelentirati traï¿½enje vrijednosti
 	if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
 	else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
-    _macro.eventlogadd('Element '  + ofElement +  ' obraðen s vrijednošæu: ' + Result);
+    _macro.eventlogadd('Element '  + ofElement +  ' obraï¿½en s vrijednoï¿½ï¿½u: ' + Result);
 end;
 
 function oxAsAcKey(someText: String): String;
@@ -1101,7 +1123,7 @@ var obj: TObject;
 begin
     obj := Ares.FindComponent(elementName);
     if obj <> nil then oxLogObjectClassName(obj, elementName)
-    else _macro.EventLogAdd(Format('Nije pronaðen element: "%s"', [elementName]));
+    else _macro.EventLogAdd(Format('Nije pronaï¿½en element: "%s"', [elementName]));
 end;
 
 function oxGetButton(button: String): TcxButton;
@@ -1213,7 +1235,7 @@ begin
         end; 
     end else
     begin
-        _macro.EventLogAdd(Format('%s%s', [prefix, 'Tražena komponenta nije postavljena']));
+        _macro.EventLogAdd(Format('%s%s', [prefix, 'Traï¿½ena komponenta nije postavljena']));
     end;   
 end;
 
