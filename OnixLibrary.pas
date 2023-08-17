@@ -4,7 +4,10 @@ unit OnixLibrary;
 
 interface 
 
-uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils, cxCalc, Forms, dialogs, Classes, menus, DB, extctrls;
+
+Uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils
+, cxCalc, Forms, dialogs, Classes, menus, DB, extctrls, DateUtils;
+
 
 
 type TCheckboxListOnix = class(TComponent)
