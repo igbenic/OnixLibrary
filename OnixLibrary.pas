@@ -1330,23 +1330,16 @@ begin
 end;
 
 Function oxTableExists(tableName: String): boolean;
-
 Var 
   alterSQL: String;
-  dbPrefix: String;
 Begin
+  alterSQL := 'SELECT CASE WHEN ' +
+        '(LEFT(:p0, 1) = ''#'' AND EXISTS (SELECT 1 FROM tempdb.sys.tables WHERE name LIKE :p0 + ''%'')) ' + 
+        'OR ' +
+        '(LEFT(:p0, 1) <> ''#'' AND EXISTS (SELECT 1 FROM sys.tables WHERE name = :p0)) ' +
+        'THEN 1 ELSE 0 END ';
 
-// Check if the tableName starts with '#' which indicates it might be a temporary table
-  If Copy(tableName, 1, 1) = '#' Then
-    dbPrefix := 'tempdb..'
-  Else
-    dbPrefix := '';
-
-  alterSQL := 'select top 1 1 from ' + dbPrefix +
-              'sysobjects where xtype = ''U'' and name = '''
-              + tableName + ''';';
-
-  Result := oxSQLExp(alterSQL) = '1';
+  Result := oxSQLExpWithParams(alterSQL, [tableName]) = '1';
 End;
 
 end.
