@@ -106,6 +106,8 @@ function oxGetActiveFieldValue(gridOrDSName: string; fieldName: String): String;
 function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
 function oxDTruthy(v: TDateTime): boolean;
 function oxColumnExists(tableName: String; columnName: String): boolean;
+Function oxTableExists(tableName: String): boolean;
+
 function oxDateToSQLString(date: TDateTime): String;
 function oxNavigator(name: String = 'bMenuDBNavigator'): TNavigator3;
 function oxSQLStepResult(stepId: Integer): String;
@@ -1326,5 +1328,25 @@ begin
     alterSQL := 'select top 1 1 from syscolumns where ID = OBJECT_ID(''' + tableName + ''') and NAME = ''' + columnName + ''';';
     Result := oxSQLExp(alterSQL) = '1';  
 end;
+
+Function oxTableExists(tableName: String): boolean;
+
+Var 
+  alterSQL: String;
+  dbPrefix: String;
+Begin
+
+// Check if the tableName starts with '#' which indicates it might be a temporary table
+  If Copy(tableName, 1, 1) = '#' Then
+    dbPrefix := 'tempdb..'
+  Else
+    dbPrefix := '';
+
+  alterSQL := 'select top 1 1 from ' + dbPrefix +
+              'sysobjects where xtype = ''U'' and name = '''
+              + tableName + ''';';
+
+  Result := oxSQLExp(alterSQL) = '1';
+End;
 
 end.
