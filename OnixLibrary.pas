@@ -107,9 +107,10 @@ function oxSTruthy(v: String; zeroIsFalsy: boolean = false): boolean;
 function oxDTruthy(v: TDateTime): boolean;
 function oxColumnExists(tableName: String; columnName: String): boolean;
 Function oxTableExists(tableName: String): boolean;
-
 function oxDateToSQLString(date: TDateTime): String;
 function oxNavigator(name: String = 'bMenuDBNavigator'): TNavigator3;
+function oxCheckComboBoxSelectedKeys(cbx: TcxCheckComboBox): TStringList;
+function oxCheckComboBoxSelectedKeysSeparated(cbx: TcxCheckComboBox; delimiter: String = ','): String;
 function oxSQLStepResult(stepId: Integer): String;
 function oxSQLStepResultWithParams(stepId: Integer; params: array of Variant): String;
 function oxSQLStepResultAnotherAres(stepId: Integer; aresAcKey: String): String;
@@ -143,6 +144,32 @@ procedure oxDefer(callback: oxCallback; forMs: integer = 1);
 procedure oxItemsFromDataset(cbx: TcxCheckComboBox; DataSet: TDataSet);
 
 implementation 
+
+function oxCheckComboBoxSelectedKeys(cbx: TcxCheckComboBox): TStringList;
+var
+  i: Integer;
+  Params: TStringList;
+begin
+  Params := TStringList.Create;
+
+    for i := 0 to cbx.Properties.Items.Count - 1 do
+    begin
+      if cbx.States[i] = cbsChecked then
+      begin
+        Params.Add(cbx.Properties.Items[i].Tag.ToString);
+      end;
+    end;
+  
+  Result := Params;
+end;
+
+function oxCheckComboBoxSelectedKeysSeparated(cbx: TcxCheckComboBox; delimiter: String = ','): String;
+var ts: TStringList;
+begin
+    ts := oxCheckComboBoxSelectedKeys(cbx);
+    ts.Delimiter := delimiter;
+    Result := ts.CommaText;
+end;
 
 procedure oxItemsFromDataset(cbx: TcxCheckComboBox; DataSet: TDataSet);
 begin
