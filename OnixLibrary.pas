@@ -117,6 +117,8 @@ function oxSQLStepResultAnotherAres(stepId: Integer; aresAcKey: String): String;
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
 function IsWeekend(ADate: TDateTime): Boolean;
 function GetFirstBusinessDayAfterToday: TDateTime;
+Function oxColumnByFieldName(TableView: TcxGridDBTableView; Const FieldName: String): TcxGridDBColumn;
+Function oxColumnByName(TableView: TcxGridDBTableView; Const ColName: String): TcxGridDBColumn;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -143,7 +145,56 @@ procedure oxAddDefToNavigatorAt(def: String; atIndex: Integer = -1);
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
 procedure oxItemsFromDataset(cbx: TcxCheckComboBox; DataSet: TDataSet);
 
-implementation 
+
+Implementation
+
+
+Function oxColumnByFieldName(TableView: TcxGridDBTableView; Const FieldName:
+                             String): TcxGridDBColumn;
+
+Var 
+  i: Integer;
+Begin
+  Result := Nil;
+  // Default result for "not found"
+
+  For i := 0 To TableView.ColumnCount - 1 Do
+    Begin
+      If Assigned(TableView.Columns[i].DataBinding) And
+         Assigned(TableView.Columns[i].DataBinding.Field) And
+         SameText(TableView.Columns[i].DataBinding.Field.FieldName, FieldName)
+        Then
+        Begin
+          Result := TableView.Columns[i];
+          Break;
+        End;
+    End;
+End;
+
+Function oxColumnByName(TableView: TcxGridDBTableView; Const ColName: String):
+
+
+
+
+                                                                 TcxGridDBColumn
+;
+
+Var 
+  i: Integer;
+Begin
+  Result := Nil;
+  // Default result for "not found"
+
+  For i := 0 To TableView.ColumnCount - 1 Do
+    Begin
+      If SameText(TableView.Columns[i].Name, ColName) Then
+        Begin
+          Result := TableView.Columns[i];
+          Break;
+        End;
+    End;
+End;
+
 
 function oxCheckComboBoxSelectedKeys(cbx: TcxCheckComboBox): TStringList;
 var
