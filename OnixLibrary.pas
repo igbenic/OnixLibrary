@@ -1167,7 +1167,7 @@ begin
     
     if not assigned(comp) then
     begin               
-        showmessage(ofElement + ' ne postoji');
+        ShowMessage(ofElement + ' ne postoji');
     end else
     begin    
         _macro.eventlogadd('Element '  + ofElement + ' postoji, testiram vrstu'); // ovdje naredati sve moguce class opcije za koje zelimo implentirati trazenje vrijednosti
