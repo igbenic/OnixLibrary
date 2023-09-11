@@ -6,7 +6,7 @@ interface
 
 
 Uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils
-, cxCalc, Forms, dialogs, Classes, menus, DB, extctrls, DateUtils;
+, cxCalc, Forms, dialogs, Classes, menus, DB, extctrls, DateUtils, clHTTP, clHTTPRequest;
 
 
 
