@@ -69,6 +69,7 @@
       <workItem from="1693575864349" duration="1422000" />
       <workItem from="1694459752442" duration="776000" />
       <workItem from="1694517920908" duration="1939000" />
+      <workItem from="1694880755355" duration="668000" />
     </task>
     <task id="LOCAL-00001" summary="showmessage">
       <option name="closed" value="true" />
@@ -78,7 +79,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693575811112</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="ox get blob to stream">
+      <option name="closed" value="true" />
+      <created>1694880819879</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1694880819879</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -87,7 +96,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="showmessage" />
-    <option name="LAST_COMMIT_MESSAGE" value="showmessage" />
+    <MESSAGE value="ox get blob to stream" />
+    <option name="LAST_COMMIT_MESSAGE" value="ox get blob to stream" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

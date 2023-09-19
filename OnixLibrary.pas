@@ -803,13 +803,31 @@ var firstFieldName: string;
 begin
     dataSet := TdlDataSet.Create(Ares);
     dataSet.SQL.Text := sql;
-    dataSet.Open;
-    _macro.eventlogadd('izvodim ' + sql);
-    if dataSet.EOF then begin
-        Result := '';
-    end else begin       
-        firstFieldName := dataSet.Fields[0].FieldName;
-        Result := dataSet.FieldByName(firstFieldName).AsString;
+    dataSet.Debug := true;
+    dataSet.DontHandleException := true;
+    try
+        dataSet.Open;
+        try
+            _macro.eventlogadd('izvodim ' + sql);
+            if (dataSet.LastError <> null) and (not dataSet.LastError.Contains('return rows')) then
+            begin                                         
+                _macro.eventlogadd('dataSet.LastError: ' + dataSet.LastError);
+                raise Exception(dataSet.LastError);
+            end; 
+            if dataSet.EOF then begin
+                Result := '';
+            end else begin       
+                firstFieldName := dataSet.Fields[0].FieldName;
+                Result := dataSet.FieldByName(firstFieldName).AsString;
+            end;
+        finally
+            dataSet.Close;
+        end;
+    except on E:Exception do
+        begin
+            _macro.EventLogAdd('Throwing exception: ' + E.message);
+            if not E.message.Contains('return rows') then raise E; 
+        end;
     end;
 end;
 
@@ -818,30 +836,43 @@ var v: Variant;
     i: Integer;
     dataSet: TdlDataSet;
     firstFieldName: string;
+    pName: string;
+    strVal: string;
 begin
     dataSet := TdlDataSet.Create(Ares);
     dataSet.SQL.Text := sql;
     dataSet.Debug := true;
     dataSet.DontHandleException := true;
     for i := 0 to Length(params) - 1 do
-    begin 
-        dataSet.Params.ParamByName('p' + inttostr(i)).Value := params[i];
+    begin                           
+        pname := 'p' + inttostr(i);
+        strVal := VarToStr(params[i]);         
+        _macro.eventlogadd('Postavljam ' + pname + ' na ' + strVal);
+        dataSet.Params.ParamByName(pname).Value := params[i];
     end;      
     try
-        dataSet.Open; 
-        if dataSet.LastError <> null then
-        begin
-            raise Exception(dataSet.LastError);
-        end; 
-        if dataSet.EOF then begin
-            Result := '';       
-        end else begin       
-            firstFieldName := dataSet.Fields[0].FieldName;
-            Result := dataSet.FieldByName(firstFieldName).AsString;
+        dataSet.Open;
+        try
+            _macro.eventlogadd('izvodim ' + sql); 
+            if (dataSet.LastError <> null) and (not dataSet.LastError.Contains('return rows')) then
+            begin            
+                _macro.eventlogadd('dataSet.LastError: ' + dataSet.LastError);
+                raise Exception(dataSet.LastError);
+            end; 
+            if dataSet.EOF then begin
+                Result := '';       
+            end else begin       
+                firstFieldName := dataSet.Fields[0].FieldName;
+                Result := dataSet.FieldByName(firstFieldName).AsString;
+            end;
+        finally
+            dataSet.Close;
         end;
-        dataSet.Close;
     except on E:Exception do
-        raise E;
+        begin 
+            _macro.EventLogAdd('Throwing exception: ' + E.message);
+            if not E.message.Contains('return rows') then raise E; 
+        end;
     end;
 end;
 
