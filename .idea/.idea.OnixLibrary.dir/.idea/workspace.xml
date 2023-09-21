@@ -4,13 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="" />
+    <list default="true" id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="52673 &#13;&#10;testiram">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <list id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -27,6 +37,23 @@
       </UrlAndAccount>
     </option>
   </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml">
+      <ranges>
+        <range start1="6" end1="7" start2="6" end2="10" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="13" end1="13" start2="16" end2="21" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="37" end1="49" start2="45" end2="57" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="50" end1="55" start2="58" end2="63" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
+        <range start1="57" end1="58" start2="65" end2="66" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
+        <range start1="60" end1="61" start2="68" end2="70" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="65" end1="66" start2="74" end2="75" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="72" end1="72" start2="81" end2="83" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="89" end1="89" start2="100" end2="111" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+        <range start1="90" end1="91" start2="112" end2="170" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
+        <range start1="99" end1="100" start2="178" end2="179" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
+      </ranges>
+    </file>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -35,41 +62,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "52673",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "tasks.servers"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache&quot;,
-      &quot;/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache&quot;,
-      &quot;/Users/igbenic/.local/share/Symbols/src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache",
+      "/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache",
+      "/Users/igbenic/.local/share/Symbols/src"
     ]
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
+    <task id="Default" summary="Default task">
+      <branch name="master" repository="$PROJECT_DIR$" />
       <changelist id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="" />
       <created>1692628290818</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1692628290818</updated>
+      <updated>1695323420926</updated>
       <workItem from="1692628293022" duration="15000" />
       <workItem from="1693575774815" duration="44000" />
       <workItem from="1693575864349" duration="1422000" />
       <workItem from="1694459752442" duration="776000" />
       <workItem from="1694517920908" duration="1939000" />
       <workItem from="1694880755355" duration="668000" />
+      <workItem from="1695117445476" duration="1740000" />
+      <workItem from="1695323258818" duration="162000" />
     </task>
     <task id="LOCAL-00001" summary="showmessage">
       <option name="closed" value="true" />
@@ -87,8 +117,76 @@
       <option name="project" value="LOCAL" />
       <updated>1694880819879</updated>
     </task>
+    <task active="true" id="52673" summary="&#13;&#10;testiram">
+      <branch name="master" repository="$PROJECT_DIR$" original="true" />
+      <branch name="52673" repository="$PROJECT_DIR$" />
+      <changelist id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="52673 &#13;&#10;testiram" />
+      <created>1695330444376</created>
+      <option name="issue" value="true" />
+      <option name="number" value="52673" />
+      <option name="presentableId" value="52673" />
+      <updated>1695323420926</updated>
+      <workItem from="1695323421115" duration="38000" />
+    </task>
     <option name="localTasksCounter" value="3" />
-    <servers />
+    <servers>
+      <Generic url="https://onix.tehnoline.hr:81">
+        <option name="responseHandlers">
+          <XPathResponseHandler>
+            <selectors>
+              <selector name="tasks" />
+              <selector name="id" />
+              <selector name="summary" />
+              <selector name="description" />
+              <selector name="updated" />
+              <selector name="created" />
+              <selector name="closed" />
+              <selector name="issueUrl" />
+              <selector name="singleTask-id" />
+              <selector name="singleTask-summary" />
+              <selector name="singleTask-description" />
+              <selector name="singleTask-updated" />
+              <selector name="singleTask-created" />
+              <selector name="singleTask-closed" />
+              <selector name="singleTask-issueUrl" />
+            </selectors>
+          </XPathResponseHandler>
+          <JsonResponseHandler>
+            <selectors>
+              <selector name="tasks" path="$" />
+              <selector name="id" path="$.id" />
+              <selector name="summary" path="$.textContent" />
+              <selector name="description" />
+              <selector name="updated" path="$.modifiedOn" />
+              <selector name="created" path="$.createdOn" />
+              <selector name="closed" />
+              <selector name="issueUrl" />
+              <selector name="singleTask-id" />
+              <selector name="singleTask-summary" />
+              <selector name="singleTask-description" />
+              <selector name="singleTask-updated" />
+              <selector name="singleTask-created" />
+              <selector name="singleTask-closed" />
+              <selector name="singleTask-issueUrl" />
+            </selectors>
+          </JsonResponseHandler>
+          <RegExResponseHandler />
+        </option>
+        <option name="shouldFormatCommitMessage" value="true" />
+        <option name="singleTaskUrl" value="{serverUrl}/api/support/GenericTasks/Task/{id}" />
+        <option name="tasksListUrl" value="{serverUrl}/api/support/GenericTasks/Tasks" />
+        <option name="templateVariables">
+          <list>
+            <TemplateVariable>
+              <option name="name" value="token" />
+              <option name="value" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzOTlmMGQ1LTI1ODItNDUwNS05ODYxLTIzOTlkZjlkNDU2ZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJpZ29yIiwic3ViIjoiaWdvciIsImVtYWlsIjoiaWdiZW5pY0Bvbml4LXB1LmhyIiwiQ29tcGFueVNldHRpbmdzSWQiOiIxOSIsIkRlbGV0ZWQiOiJGYWxzZSIsIkNvbm5lY3Rpb24iOiJPbml4IC0gT05JWF9JIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy92ZXJzaW9uIjoidjQiLCJTZXNzaW9uSWQiOiI3YjE0ZWM1Zi01YjhjLTQ4MWUtOGNjNC04OWUxYWJlM2NlZmEiLCJBcHBsaWNhdGlvblBhY2tldHMiOiJTdXBwb3J0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIlRlc3RlciIsIkRldmVsb3BlciIsIlVzZXIiLCJBZG1pbiIsIlRlbmFudCIsIkVudmlyb25tZW50VGVzdGVyIl0sImV4cCI6MTY5NzE4OTE3NSwiaXNzIjoiaHR0cHM6Ly9vbml4bWFuYWdlci5henVyZXdlYnNpdGVzLm5ldCIsImF1ZCI6Imh0dHBzOi8vb25peG1hbmFnZXIuYXp1cmV3ZWJzaXRlcy5uZXQifQ.zlaiheiYC7G3Qwvq7qTpoZoLJg_Kpu_D8S-mNB9Vp2o" />
+            </TemplateVariable>
+          </list>
+        </option>
+        <option name="useHttpAuthentication" value="true" />
+        <username>igor</username>
+      </Generic>
+    </servers>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
@@ -97,7 +195,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="showmessage" />
     <MESSAGE value="ox get blob to stream" />
-    <option name="LAST_COMMIT_MESSAGE" value="ox get blob to stream" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
