@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="52673 &#13;&#10;testiram">
+    <list default="true" id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" afterDir="false" />
     </list>
-    <list id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,23 +35,6 @@
       </UrlAndAccount>
     </option>
   </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml">
-      <ranges>
-        <range start1="6" end1="7" start2="6" end2="10" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="13" end1="13" start2="16" end2="21" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="37" end1="49" start2="45" end2="57" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="50" end1="55" start2="58" end2="63" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
-        <range start1="57" end1="58" start2="65" end2="66" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
-        <range start1="60" end1="61" start2="68" end2="70" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="65" end1="66" start2="74" end2="75" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="72" end1="72" start2="81" end2="83" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="89" end1="89" start2="100" end2="111" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-        <range start1="90" end1="91" start2="112" end2="170" changelist="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" />
-        <range start1="99" end1="100" start2="178" end2="179" changelist="493f82d9-8f0c-472e-8142-3e66f0187315" />
-      </ranges>
-    </file>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -62,27 +43,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "52673",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "tasks.servers"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;tasks.servers&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache",
-      "/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache",
-      "/Users/igbenic/.local/share/Symbols/src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache&quot;,
+      &quot;/Users/igbenic/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache&quot;,
+      &quot;/Users/igbenic/.local/share/Symbols/src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="Default" summary="Default task">
@@ -127,6 +108,7 @@
       <option name="presentableId" value="52673" />
       <updated>1695323420926</updated>
       <workItem from="1695323421115" duration="38000" />
+      <workItem from="1695365160827" duration="7000" />
     </task>
     <option name="localTasksCounter" value="3" />
     <servers>
@@ -190,6 +172,29 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="52673" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />

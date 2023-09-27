@@ -122,6 +122,8 @@ Function oxColumnByFieldName(TableView: TcxGridDBTableView; Const FieldName: Str
 Function oxColumnByName(TableView: TcxGridDBTableView; Const ColName: String): TcxGridDBColumn;
 function oxSendTwilioMessage(const AccountSID, AuthToken, ToNumber, FromNumber, MessageBody: String): String;
 function oxSendInfoBipMessage(const BaseURL, APIKey, Sender, Recipient, MessageText: String): String;
+function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
+function oxApplyAresVariablesToString(s: String): String;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -380,6 +382,46 @@ var stepSQL: String;
 begin
     stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [aresAcKey, stepId]);
     result := oxSQLExp(stepSQL);
+end;
+
+function oxApplyAresVariablesToString(s: String): String;
+var variableStrings: TStringList;
+    varString: String;
+    split: array of string;
+    varName, varValue: String;
+    i: Integer;
+begin
+    variableStrings := TStringList.Create();    
+    Ares.Variables.SaveToStrings(variableStrings);
+    
+    for varString in variableStrings do begin
+        _macro.EventLogAdd(varString);
+        split := varString.split('=');
+        
+        if Length(split) > 1 then
+        begin
+            varName := split[0].Trim;
+            varValue := split[1];
+        
+            // Concatenate remaining parts if there are more than two parts after the split
+            for i := 2 to High(split) do
+            begin
+                varValue := varValue + '=' + split[i];
+            end;
+          
+            s := StringReplace(s, '#' + varName + '#', varValue.Trim, [rfReplaceAll]);
+        end;
+    end;                                     
+    
+    result := s;
+end;
+
+function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
+var stepSQL: String;
+begin
+    stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [ares.AcKey, stepId]);
+    stepSQL := oxApplyAresVariablesToString(stepSQL);
+    result := stepSQL;
 end;
 
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
