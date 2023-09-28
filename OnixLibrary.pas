@@ -124,6 +124,7 @@ function oxSendTwilioMessage(const AccountSID, AuthToken, ToNumber, FromNumber, 
 function oxSendInfoBipMessage(const BaseURL, APIKey, Sender, Recipient, MessageText: String): String;
 function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
 function oxApplyAresVariablesToString(s: String): String;
+function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -149,9 +150,120 @@ procedure oxAddDefToNavigator(def: String; navigator: String = 'bMenuDBNavigator
 procedure oxAddDefToNavigatorAt(def: String; atIndex: Integer = -1);
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
 procedure oxItemsFromDataset(cbx: TcxCheckComboBox; DataSet: TDataSet);
+procedure oxImportCSV(csv: array of TStringList; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
+procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
 
 
 Implementation
+
+function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
+var
+  CSVFile: TStringList;
+  I: Integer;
+begin
+  CSVFile := TStringList.Create;
+
+  try
+    // Load the CSV file
+    CSVFile.LoadFromFile(CSVFileName);
+
+    // Set the length of the result array
+    SetLength(Result, CSVFile.Count);
+
+    // Iterate over the lines in the CSV file
+    for I := 0 to CSVFile.Count - 1 do
+    begin
+      Result[I] := TStringList.Create;
+
+      // Set the delimiter and quote char
+      Result[I].Delimiter := Delimiter;
+      Result[I].StrictDelimiter := True; // Ignore spaces as delimiters
+      Result[I].QuoteChar := QuoteChar;
+
+      // Parse the line into a TStringList of fields
+      Result[I].DelimitedText := CSVFile[I];
+    end;
+  finally
+    CSVFile.Free;
+  end;
+end;
+
+procedure oxImportCSV(csv: array of TStringList; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
+var createQuery: String;
+    insertQuery: String;
+    colIndex: Integer;
+    rowIndex: Integer;
+    tableColumn: String;
+    rowValues: array of Variant;
+begin
+    if recreateTable and oxtableexists(tableName) then
+    begin
+        oxSQLExp('drop table ' + tableName);
+    end;
+
+    if not oxTableExists(tableName) then
+    begin        
+        createQuery := 'create table ' + tableName + ' (';
+        for colIndex := 0 to High(tableColumns) do
+        begin                
+            tableColumn := tableColumns[colIndex];
+            createQuery := createQuery + char(13) + '   [' + tableColumn + '] varchar(max) ';
+            if colIndex < High(tableColumns) then
+            begin
+                createQuery := createQuery + ',';
+            end;
+        end;                                     
+        createQuery := createQuery + char(13) + ');';
+        oxSQLExp(createQuery);
+    end;
+    
+    if cleanTable then
+    begin
+        oxSQLExp('truncate table ' + tableName);
+    end; 
+
+    insertQuery := 'insert into ' + tableName + '(';
+          
+    for colIndex := 0 to High(tableColumns) do
+    begin
+        insertQuery := insertQuery + '[' + tableColumns[colIndex] + ']';
+        if colIndex < High(tableColumns) then
+        begin
+            insertQuery := insertQuery + ', ';
+        end;
+    end;
+    
+    insertQuery := insertQuery + ')' + char(13) + 'values(';
+        
+    for colIndex := 0 to High(tableColumns) do
+    begin
+        insertQuery := insertQuery + ':p' + IntToStr(colIndex); 
+        if colIndex < High(tableColumns) then
+        begin
+            insertQuery := insertQuery + ',';
+        end;
+    end;        
+                               
+    insertQuery := insertQuery + ');'; 
+    
+    SetLength(RowValues, Length(tableColumns));
+        
+    for rowIndex := firstRow to High(csv) do
+    begin              
+        for colIndex := 0 to High(tableColumns) do
+        begin             
+            rowValues[colIndex] := csv[rowIndex][colIndex];
+        end;                                    
+        oxSQLExpWithParams(insertQuery, rowValues);
+    end;
+end;
+
+procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
+var parsed: array of TStringList;
+begin
+    parsed := oxParseCSV(CSVFileName, Delimiter, QuoteChar);
+    oxImportCSV(parsed, tableName, tableColumns, firstRow, recreateTable, cleanTable);
+end;
 
 function oxSendTwilioMessage(const AccountSID, AuthToken, ToNumber, FromNumber, MessageBody: String): String;
  var request: TclHTTP;
