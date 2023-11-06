@@ -90,6 +90,7 @@ function oxSQLBlobToStream(sql: string; params: array of Variant): TStream;
 function oxAddColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
 function oxAddCurrencyColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
 function oxAddNumericColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
+function oxAddCheckboxColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
 function oxGetGridSQL(gridName: String): String;
 function oxGetDatasetSQL(dataSet: String): String;
 function oxGetDataset(dataset: String): TdlDataSet;
@@ -1105,6 +1106,20 @@ begin
         with TcxCalcEditProperties(Properties) do
         begin
             DisplayFormat := '###,##0.00';
+        end;
+    end;
+end;
+
+function oxAddCheckboxColumn(gridName: String; columnCaption: String; columnFieldName: String; width: integer = 50): TcxGridDBColumn;
+begin
+	Result := oxAddColumn(gridName, columnCaption, columnFieldName, width);
+    with Result do
+    begin
+        PropertiesClass := TcxCustomCheckboxProperties;
+        with TcxCustomCheckboxProperties(Properties) do
+        begin
+            ValueChecked := 'T';
+            ValueUnchecked := 'F';
         end;
     end;
 end;
