@@ -126,6 +126,7 @@ function oxSendInfoBipMessage(const BaseURL, APIKey, Sender, Recipient, MessageT
 function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
 function oxApplyAresVariablesToString(s: String): String;
 function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
+function oxTransliterate(const Text: string): string;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -156,6 +157,38 @@ procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; t
 
 
 Implementation
+
+function oxTransliterate(const Text: string): string;
+var
+  i: Integer;
+begin
+  Result := Text;
+  for i := 1 to Length(Result) do
+  begin
+    case Result[i] of
+      'è', 'æ': Result[i] := 'c';
+      'š': Result[i] := 's';
+      'ð': Result[i] := 'd';
+      'ž': Result[i] := 'z';
+      'È', 'Æ': Result[i] := 'C';
+      'Š': Result[i] := 'S';
+      'Ð': Result[i] := 'D';
+      'Ž': Result[i] := 'Z';
+      'á', '?', 'ä', 'â', '?': Result[i] := 'a';
+      'Á', '?', 'Ä', 'Â', '?': Result[i] := 'A';
+      'é', '?', 'ë', '?': Result[i] := 'e';
+      'É', '?', 'Ë', '?': Result[i] := 'E';
+      'í', '?', '?', 'î': Result[i] := 'i';
+      'Í', '?', '?', 'Î': Result[i] := 'I';
+      'ó', '?', 'ö', 'ô', '?': Result[i] := 'o';
+      'Ó', '?', 'Ö', 'Ô', '?': Result[i] := 'O';
+      'ú', '?', 'ü', '?': Result[i] := 'u';
+      'Ú', '?', 'Ü', '?': Result[i] := 'U';
+      // Add any other special characters and their replacements here
+    end;
+  end;
+end;
+
 
 function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
 var
@@ -301,6 +334,7 @@ var
   RequestStream: TStringStream;
   RequestStrings: TStringList;
   jsonLanguages: TclJSONObject;
+  acPhone: String;
 begin
   if BaseURL.EndsWith('/') then
   begin
@@ -332,10 +366,13 @@ begin
     // Create destinations array and add a destination object
     jsonDestinationsArray := TclJSONArray.Create();
     jsonMessage.AddMember('destinations', jsonDestinationsArray);
-
-    jsonDestinations := TclJSONObject.Create();
-    jsonDestinationsArray.Add(jsonDestinations);
-    jsonDestinations.AddString('to', Recipient);
+                 
+    for acPhone in Recipient.Split(';') do
+    begin    
+        jsonDestinations := TclJSONObject.Create();
+        jsonDestinationsArray.Add(jsonDestinations);
+        jsonDestinations.AddString('to', EnsureCountryCode(acPhone, '00385'));
+    end;
 
     // Convert the JSON object to a string and add it to the request source 
     //RequestStream := TStringStream.Create(jsonRequest.GETJsonString(), TEncoding.UTF8);
@@ -365,6 +402,28 @@ begin
     RequestStrings.Free;
   end;
 end;
+
+function EnsureCountryCode(const Number: String; const DefaultCountryCode: String): String;
+begin
+  // Check if the number starts with '+' or '00' which means it's already in international format
+  if Number.StartsWith('+') or Number.StartsWith('00') then
+  begin
+    Result := Number;
+  end
+  else
+  begin
+    // If the number starts with '0', remove this leading '0' before adding the country code
+    if Number.StartsWith('0') then
+    begin
+      Result := DefaultCountryCode + Copy(Number, 2, MaxInt);
+    end
+    else
+    begin
+      Result := DefaultCountryCode + Number;
+    end;
+  end;
+end;
+
 
 Function oxColumnByFieldName(TableView: TcxGridDBTableView; Const FieldName:
                              String): TcxGridDBColumn;
@@ -1115,8 +1174,8 @@ begin
 	Result := oxAddColumn(gridName, columnCaption, columnFieldName, width);
     with Result do
     begin
-        PropertiesClass := TcxCustomCheckboxProperties;
-        with TcxCustomCheckboxProperties(Properties) do
+        PropertiesClass := TcxCheckBoxProperties;
+        with TcxCheckBoxProperties(Properties) do
         begin
             ValueChecked := 'T';
             ValueUnchecked := 'F';
