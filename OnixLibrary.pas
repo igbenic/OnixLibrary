@@ -174,16 +174,16 @@ begin
       'Š': Result[i] := 'S';
       'Ð': Result[i] := 'D';
       'Ž': Result[i] := 'Z';
-      'á', '?', 'ä', 'â', '?': Result[i] := 'a';
-      'Á', '?', 'Ä', 'Â', '?': Result[i] := 'A';
-      'é', '?', 'ë', '?': Result[i] := 'e';
-      'É', '?', 'Ë', '?': Result[i] := 'E';
-      'í', '?', '?', 'î': Result[i] := 'i';
-      'Í', '?', '?', 'Î': Result[i] := 'I';
-      'ó', '?', 'ö', 'ô', '?': Result[i] := 'o';
-      'Ó', '?', 'Ö', 'Ô', '?': Result[i] := 'O';
-      'ú', '?', 'ü', '?': Result[i] := 'u';
-      'Ú', '?', 'Ü', '?': Result[i] := 'U';
+      'á', 'a', 'ä', 'â', 'a': Result[i] := 'a';
+      'Á', 'A', 'Ä', 'Â', 'A': Result[i] := 'A';
+      'é', 'e', 'ë', 'e': Result[i] := 'e';
+      'É', 'E', 'Ë', 'E': Result[i] := 'E';
+      'í', 'i', 'i', 'î': Result[i] := 'i';
+      'Í', 'I', 'I', 'Î': Result[i] := 'I';
+      'ó', 'o', 'ö', 'ô', 'o': Result[i] := 'o';
+      'Ó', 'O', 'Ö', 'Ô', 'O': Result[i] := 'O';
+      'ú', 'u', 'ü', 'u': Result[i] := 'u';
+      'Ú', 'U', 'Ü', 'U': Result[i] := 'U';
       // Add any other special characters and their replacements here
     end;
   end;
@@ -371,7 +371,7 @@ begin
     begin    
         jsonDestinations := TclJSONObject.Create();
         jsonDestinationsArray.Add(jsonDestinations);
-        jsonDestinations.AddString('to', EnsureCountryCode(acPhone, '00385'));
+        jsonDestinations.AddString('to', oxOnlyASCIILetterAndNumbers(EnsureCountryCode(acPhone, '00385')));
     end;
 
     // Convert the JSON object to a string and add it to the request source 
