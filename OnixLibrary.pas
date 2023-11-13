@@ -1361,9 +1361,14 @@ begin
     else if c is TcxGridDBTableView then
     begin
         Result := TcxGridDBTableView(c);
+    end 
+    else if c is TcxGridDBBandedTableView then
+    begin
+        Result := c;
     end
     else
-    begin
+    begin       
+        _macro.EventLogAdd('Was of type: ' + c.ClassName);
         showmessage('Not a valid grid or gridview: ' + grid);
     end;
 end;
