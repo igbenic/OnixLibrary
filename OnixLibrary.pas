@@ -37,7 +37,8 @@ type TCheckboxListOnix = class(TComponent)
         function GetSelectedKeysJoinedAndQuoted(by: String = ','):string;
     end;
 
-type oxCallback = procedure(); 
+type oxCallback = procedure();
+ 
 type 
     TLocalAfterOpen = class(TObject)
     private                        
@@ -1746,7 +1747,7 @@ begin
     begin
         localEvent := TLocalNotifyEvent.Create(callback);
         localEvent.Callback := callback;
-        OnClick := localEvent.NewEvent;
+        OnClick := localEvent.NotifyEvent;
         _macro.eventlogadd('New event set for ' + button);
     end;
 end;
