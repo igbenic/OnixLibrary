@@ -127,6 +127,7 @@ function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
 function oxApplyAresVariablesToString(s: String): String;
 function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
 function oxTransliterate(const Text: string): string;
+function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -157,6 +158,15 @@ procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; t
 
 
 Implementation
+
+function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
+var sl: TStringList;
+begin
+    sl := TStringList.Create;
+    sl.Delimiter := delimiter;
+    sl.DelimitedText := commaText;
+    result := sl;
+end;
 
 function oxTransliterate(const Text: string): string;
 var
@@ -1579,9 +1589,9 @@ begin
     end else
     begin    
         _macro.eventlogadd('Element '  + ofElement + ' postoji, testiram vrstu'); // ovdje naredati sve moguce class opcije za koje zelimo implentirati trazenje vrijednosti
-	if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
+    if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
-	else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
+    else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
