@@ -1740,10 +1740,13 @@ begin
 end;
 
 procedure oxOnButtonClick(button: String; callback: oxCallback);
+var localEvent: TLocalNotifyEvent;
 begin
     with oxGetButton(button) do
     begin
-        OnClick := callback;
+        localEvent := TLocalNotifyEvent.Create(OnClick);
+        localEvent.Callback := callback;
+        OnClick := localEvent.NewEvent;
         _macro.eventlogadd('New event set for ' + button);
     end;
 end;
