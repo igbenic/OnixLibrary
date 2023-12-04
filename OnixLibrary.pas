@@ -1744,7 +1744,7 @@ var localEvent: TLocalNotifyEvent;
 begin
     with oxGetButton(button) do
     begin
-        localEvent := TLocalNotifyEvent.Create(OnClick);
+        localEvent := TLocalNotifyEvent.Create(callback);
         localEvent.Callback := callback;
         OnClick := localEvent.NewEvent;
         _macro.eventlogadd('New event set for ' + button);
