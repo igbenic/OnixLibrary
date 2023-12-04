@@ -143,6 +143,7 @@ procedure oxLogObjectClassname(o: TObject; oName: String = 'nepoznato');
 procedure oxLogElementClassname(elementName: String);
 procedure oxAddSQLColumn(tableName: String; columnName: String; sqlType: String);
 procedure oxBeforeButtonClick(button: String; callback: oxCallback);
+procedure oxOnButtonClick(button: String; callback: oxCallback);
 procedure oxBeforePopupClick(popupName: String; callback: oxCallback);
 procedure oxAfterButtonClick(button: String; callback: oxCallback);
 procedure oxPrintComponent(component: TComponent; prefix: String = '');
@@ -1735,6 +1736,15 @@ begin
         localAfterClick.AfterOldEvent := true;    
         OnClick := localAfterClick.NewEvent;
         _macro.eventlogadd('New event set after, for ' + button);
+    end;
+end;
+
+procedure oxOnButtonClick(button: String; callback: oxCallback);
+begin
+    with oxGetButton(button) do
+    begin
+        OnClick := callback;
+        _macro.eventlogadd('New event set for ' + button);
     end;
 end;
 
