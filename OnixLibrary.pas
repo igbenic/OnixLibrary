@@ -129,6 +129,7 @@ function oxApplyAresVariablesToString(s: String): String;
 function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
 function oxTransliterate(const Text: string): string;
 function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
+function oxMemoryStreamToString(MStream: TMemoryStream): string;
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -160,6 +161,23 @@ procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; t
 
 
 Implementation
+
+function oxMemoryStreamToString(MStream: TMemoryStream): string;
+var
+  SS: TStringStream;
+begin
+  if MStream <> nil then
+  begin
+    MStream.Position := 0;
+    SS := TStringStream.Create('');
+    try
+      SS.CopyFrom(MStream, MStream.Size);
+      Result := SS.DataString;
+    finally
+      SS.Free;
+    end;
+  end;
+end;
 
 function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
 var sl: TStringList;
