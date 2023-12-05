@@ -1073,7 +1073,7 @@ begin
     begin                           
         pname := 'p' + inttostr(i);
         strVal := VarToStr(params[i]);         
-        _macro.eventlogadd('Postavljam ' + pname + ' na ' + strVal);
+        //_macro.eventlogadd('Postavljam ' + pname + ' na ' + strVal);
         dataSet.Params.ParamByName(pname).Value := params[i];
     end;      
     try
