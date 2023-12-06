@@ -130,6 +130,9 @@ function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of T
 function oxTransliterate(const Text: string): string;
 function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
 function oxMemoryStreamToString(MStream: TMemoryStream): string;
+function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
+function oxContainsValue(const Arr: array of string; const Value: string): Boolean;
+procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -161,6 +164,32 @@ procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; t
 
 
 Implementation
+
+procedure oxLogAresVariables();
+var variableStrings: TStringList;
+    varString: String;
+begin
+    variableStrings := TStringList.Create();    
+    Ares.Variables.SaveToStrings(variableStrings);
+    
+    for varString in variableStrings do begin
+        // ovo ispisuje svaki redak
+        _macro.EventLogAdd(varString);
+    end;
+end;
+
+function oxContainsValue(const Arr: array of string; const Value: string): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 0 to High(Arr) do
+    if Arr[I] = Value then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
 
 function oxMemoryStreamToString(MStream: TMemoryStream): string;
 var
@@ -1075,7 +1104,7 @@ begin
     end;
 end;
 
-function oxSQLExpWithParams(sql: string; params: array of Variant): string;
+function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
 var v: Variant;
     i: Integer;
     dataSet: TdlDataSet;
@@ -1096,27 +1125,40 @@ begin
     end;      
     try
         dataSet.Open;
-        try
-            _macro.eventlogadd('izvodim ' + sql); 
-            if (dataSet.LastError <> null) and (not dataSet.LastError.Contains('return rows')) then
-            begin            
-                _macro.eventlogadd('dataSet.LastError: ' + dataSet.LastError);
-                raise Exception(dataSet.LastError);
-            end; 
-            if dataSet.EOF then begin
-                Result := '';       
-            end else begin       
-                firstFieldName := dataSet.Fields[0].FieldName;
-                Result := dataSet.FieldByName(firstFieldName).AsString;
-            end;
-        finally
-            dataSet.Close;
-        end;
+        Result := dataSet;
     except on E:Exception do
         begin 
             _macro.EventLogAdd('Throwing exception: ' + E.message);
             if not E.message.Contains('return rows') then raise E; 
         end;
+    end;
+end;
+
+function oxSQLExpWithParams(sql: string; params: array of Variant): string;
+var v: Variant;
+    i: Integer;
+    dataSet: TdlDataSet;
+    firstFieldName: string;
+    pName: string;
+    strVal: string;
+begin
+    dataSet := oxSQLExpRowWithParams(sql, params);     
+    dataSet.Open;
+    try
+        _macro.eventlogadd('izvodim ' + sql); 
+        if (dataSet.LastError <> null) and (not dataSet.LastError.Contains('return rows')) then
+        begin            
+            _macro.eventlogadd('dataSet.LastError: ' + dataSet.LastError);
+            raise Exception(dataSet.LastError);
+        end; 
+        if dataSet.EOF then begin
+            Result := '';       
+        end else begin       
+            firstFieldName := dataSet.Fields[0].FieldName;
+            Result := dataSet.FieldByName(firstFieldName).AsString;
+        end;
+    finally
+        dataSet.Close;
     end;
 end;
 
