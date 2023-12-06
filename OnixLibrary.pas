@@ -1098,8 +1098,11 @@ begin
         end;
     except on E:Exception do
         begin
-            _macro.EventLogAdd('Throwing exception: ' + E.message);
-            if not E.message.Contains('return rows') then raise E; 
+            if not E.message.Contains('return rows') then 
+            begin       
+                _macro.EventLogAdd('Thrown exception: ' + E.message);
+                raise E;
+            end; 
         end;
     end;
 end;
@@ -1128,8 +1131,11 @@ begin
         Result := dataSet;
     except on E:Exception do
         begin 
-            _macro.EventLogAdd('Throwing exception: ' + E.message);
-            if not E.message.Contains('return rows') then raise E; 
+            if not E.message.Contains('return rows') then 
+            begin
+                _macro.EventLogAdd('Thrown exception: ' + E.message);
+                raise E;
+            end; 
         end;
     end;
 end;
