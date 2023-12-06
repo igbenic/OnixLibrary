@@ -132,6 +132,8 @@ function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): T
 function oxMemoryStreamToString(MStream: TMemoryStream): string;
 function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
 function oxContainsValue(const Arr: array of string; const Value: string): Boolean;
+function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
+procedure oxSQLStoreBlob(sql: String; blob: TStream; params: array of Variant);
 procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -1112,25 +1114,55 @@ begin
     end;
 end;
 
-function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
-var v: Variant;
-    i: Integer;
-    dataSet: TdlDataSet;
-    firstFieldName: string;
-    pName: string;
-    strVal: string;
+procedure oxSQLStoreBlob(sql: String; blob: TStream; params: array of Variant);
+var dataSet: TdlDataSet;
 begin
+    dataSet := oxMakeDSWithParams(sql, params);
+    
+    dataSet.ParamByName('blob').LoadFromStream(blob, ftBlob); 
+         
+    try
+        dataSet.Open;
+    except on E:Exception do
+        begin 
+            if not E.message.Contains('return rows') then 
+            begin
+                _macro.EventLogAdd('Thrown exception: ' + E.message);
+                raise E;
+            end; 
+        end;
+    end;   
+end;
+
+function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
+var dataSet: TdlDataSet;
+    i: Integer;
+    pName: string;
+begin        
     dataSet := TdlDataSet.Create(Ares);
     dataSet.SQL.Text := sql;
     dataSet.Debug := true;
     dataSet.DontHandleException := true;
+    
     for i := 0 to Length(params) - 1 do
     begin                           
         pname := 'p' + inttostr(i);
-        strVal := VarToStr(params[i]);         
-        //_macro.eventlogadd('Postavljam ' + pname + ' na ' + strVal);
+        _macro.EventLogAdd('type of param value: ' + IntToStr(VarType(params[i])));
+        if VarType(params[i]) = 8209 then
+        begin    
+            raise Exception.Create('Are you using oxSQLStoreBlob for blobs?');               
+        end;
+                    
         dataSet.Params.ParamByName(pname).Value := params[i];
-    end;      
+    end; 
+end;
+
+function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
+var dataSet: TdlDataSet;
+    firstFieldName: string;
+begin
+    dataSet := oxMakeDSWithParams(sql, params);
+             
     try
         dataSet.Open;
         Result := dataSet;
