@@ -8,8 +8,6 @@ interface
 Uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils
 , cxCalc, Forms, dialogs, Classes, clEncoder, menus, DB, extctrls, DateUtils, clHTTP, clHTTPRequest, clJson;
 
-
-
 type TCheckboxListOnix = class(TComponent)
     private                 
         parent: TComponent;
@@ -116,6 +114,7 @@ function oxCheckComboBoxSelectedKeys(cbx: TcxCheckComboBox): TStringList;
 function oxCheckComboBoxSelectedKeysSeparated(cbx: TcxCheckComboBox; delimiter: String = ','): String;
 function oxSQLStepResult(stepId: Integer): String;
 function oxSQLStepResultWithParams(stepId: Integer; params: array of Variant): String;
+function oxSQLStepRowResultWithParams(stepId: Integer; params: array of Variant): TdlDataSet;
 function oxSQLStepResultAnotherAres(stepId: Integer; aresAcKey: String): String;
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
 function IsWeekend(ADate: TDateTime): Boolean;
@@ -129,11 +128,12 @@ function oxApplyAresVariablesToString(s: String): String;
 function oxParseCSV(const CSVFileName, Delimiter, QuoteChar: string): array of TStringList;
 function oxTransliterate(const Text: string): string;
 function oxCommaTextToTStringList(commaText: String; delimiter: String = ','): TStringList;
-function oxMemoryStreamToString(MStream: TMemoryStream): string;
+function oxStreamToString(Stream: TStream): string;
 function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
 function oxContainsValue(const Arr: array of string; const Value: string): Boolean;
 function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
-procedure oxSQLStoreBlob(sql: String; blob: TStream; params: array of Variant);
+function oxSQLExpWithBlob(sql: String; blob: TStream; params: array of Variant): String;
+function oxSQLExpRowWithBlob(sql: String; blob: TStream; params: array of Variant): TdlDataSet;
 procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -164,7 +164,6 @@ procedure oxItemsFromDataset(cbx: TcxCheckComboBox; DataSet: TDataSet);
 procedure oxImportCSV(csv: array of TStringList; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
 procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
 
-
 Implementation
 
 procedure oxLogAresVariables();
@@ -193,17 +192,18 @@ begin
     end;
 end;
 
-function oxMemoryStreamToString(MStream: TMemoryStream): string;
+function oxStreamToString(Stream: TStream): string;
 var
   SS: TStringStream;
 begin
-  if MStream <> nil then
+  Result := '';
+  if Stream <> nil then
   begin
-    MStream.Position := 0;
+    Stream.Position := 0;  // Reset the position to the beginning of the stream
     SS := TStringStream.Create('');
     try
-      SS.CopyFrom(MStream, MStream.Size);
-      Result := SS.DataString;
+      SS.CopyFrom(Stream, Stream.Size);  // Copy the entire stream
+      Result := SS.DataString;  // Get the string representation
     finally
       SS.Free;
     end;
@@ -678,6 +678,13 @@ begin
     result := oxSQLExpWithParams(stepSQL, params);
 end;
 
+function oxSQLStepRowResultWithParams(stepId: Integer; params: array of Variant): TdlDataSet;
+var stepSQL: String;
+begin
+    stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [Ares.AcKey, stepId]);
+    result := oxSQLExpRowWithParams(stepSQL, params);
+end;
+
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
 var deferrer: TDeferEvent;
 begin
@@ -1114,7 +1121,7 @@ begin
     end;
 end;
 
-procedure oxSQLStoreBlob(sql: String; blob: TStream; params: array of Variant);
+function oxSQLExpRowWithBlob(sql: String; blob: TStream; params: array of Variant): TdlDataSet;
 var dataSet: TdlDataSet;
 begin
     dataSet := oxMakeDSWithParams(sql, params);
@@ -1123,6 +1130,7 @@ begin
          
     try
         dataSet.Open;
+        Result := dataSet;
     except on E:Exception do
         begin 
             if not E.message.Contains('return rows') then 
@@ -1131,18 +1139,46 @@ begin
                 raise E;
             end; 
         end;
-    end;   
+    end; 
+end;
+
+function oxSQLExpWithBlob(sql: String; blob: TStream; params: array of Variant): String;
+var dataSet: TdlDataSet;
+    firstFieldName: string;
+begin
+    dataSet := oxSQLExpRowWithBlob(sql, blob, params);     
+    try
+        _macro.eventlogadd('izvodim ' + sql); 
+        if (dataSet.LastError <> null) and (not dataSet.LastError.Contains('return rows')) then
+        begin            
+            _macro.eventlogadd('dataSet.LastError: ' + dataSet.LastError);
+            raise Exception(dataSet.LastError);
+        end; 
+        if dataSet.EOF then begin
+            Result := '';       
+        end else begin                          
+            if dataSet.Fields.Count > 0 then
+            begin
+                firstFieldName := dataSet.Fields[0].FieldName;
+                Result := dataSet.FieldByName(firstFieldName).AsString;
+            end else begin
+                _macro.EventLogAdd('No return fields to return');
+                Result := '';
+            end;
+        end;
+    finally
+        dataSet.Close;
+    end;  
 end;
 
 function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
-var dataSet: TdlDataSet;
-    i: Integer;
+var i: Integer;
     pName: string;
 begin        
-    dataSet := TdlDataSet.Create(Ares);
-    dataSet.SQL.Text := sql;
-    dataSet.Debug := true;
-    dataSet.DontHandleException := true;
+    Result := TdlDataSet.Create(Ares);
+    Result.SQL.Text := sql;
+    Result.Debug := true;
+    Result.DontHandleException := true;
     
     for i := 0 to Length(params) - 1 do
     begin                           
@@ -1153,19 +1189,17 @@ begin
             raise Exception.Create('Are you using oxSQLStoreBlob for blobs?');               
         end;
                     
-        dataSet.Params.ParamByName(pname).Value := params[i];
+        Result.Params.ParamByName(pname).Value := params[i];
     end; 
 end;
 
 function oxSQLExpRowWithParams(sql: string; params: array of Variant): TdlDataSet;
-var dataSet: TdlDataSet;
-    firstFieldName: string;
+var firstFieldName: string;
 begin
-    dataSet := oxMakeDSWithParams(sql, params);
+    Result := oxMakeDSWithParams(sql, params);
              
     try
-        dataSet.Open;
-        Result := dataSet;
+        Result.Open;
     except on E:Exception do
         begin 
             if not E.message.Contains('return rows') then 
