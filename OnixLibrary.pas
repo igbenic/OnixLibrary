@@ -114,6 +114,8 @@ function oxCheckComboBoxSelectedKeys(cbx: TcxCheckComboBox): TStringList;
 function oxCheckComboBoxSelectedKeysSeparated(cbx: TcxCheckComboBox; delimiter: String = ','): String;
 function oxSQLStepResult(stepId: Integer): String;
 function oxSQLStepResultWithParams(stepId: Integer; params: array of Variant): String;
+function oxSQLStepResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): String;
+function oxSQLStepRowResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): TdlDataSet;
 function oxSQLStepRowResultWithParams(stepId: Integer; params: array of Variant): TdlDataSet;
 function oxSQLStepResultAnotherAres(stepId: Integer; aresAcKey: String): String;
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
@@ -227,24 +229,24 @@ begin
   for i := 1 to Length(Result) do
   begin
     case Result[i] of
-      'è', 'æ': Result[i] := 'c';
-      'š': Result[i] := 's';
-      'ð': Result[i] := 'd';
-      'ž': Result[i] := 'z';
-      'È', 'Æ': Result[i] := 'C';
-      'Š': Result[i] := 'S';
-      'Ð': Result[i] := 'D';
-      'Ž': Result[i] := 'Z';
-      'á', 'a', 'ä', 'â', 'a': Result[i] := 'a';
-      'Á', 'A', 'Ä', 'Â', 'A': Result[i] := 'A';
-      'é', 'e', 'ë', 'e': Result[i] := 'e';
-      'É', 'E', 'Ë', 'E': Result[i] := 'E';
-      'í', 'i', 'i', 'î': Result[i] := 'i';
-      'Í', 'I', 'I', 'Î': Result[i] := 'I';
-      'ó', 'o', 'ö', 'ô', 'o': Result[i] := 'o';
-      'Ó', 'O', 'Ö', 'Ô', 'O': Result[i] := 'O';
-      'ú', 'u', 'ü', 'u': Result[i] := 'u';
-      'Ú', 'U', 'Ü', 'U': Result[i] := 'U';
+      'ï¿½', 'ï¿½': Result[i] := 'c';
+      'ï¿½': Result[i] := 's';
+      'ï¿½': Result[i] := 'd';
+      'ï¿½': Result[i] := 'z';
+      'ï¿½', 'ï¿½': Result[i] := 'C';
+      'ï¿½': Result[i] := 'S';
+      'ï¿½': Result[i] := 'D';
+      'ï¿½': Result[i] := 'Z';
+      'ï¿½', 'a', 'ï¿½', 'ï¿½', 'a': Result[i] := 'a';
+      'ï¿½', 'A', 'ï¿½', 'ï¿½', 'A': Result[i] := 'A';
+      'ï¿½', 'e', 'ï¿½', 'e': Result[i] := 'e';
+      'ï¿½', 'E', 'ï¿½', 'E': Result[i] := 'E';
+      'ï¿½', 'i', 'i', 'ï¿½': Result[i] := 'i';
+      'ï¿½', 'I', 'I', 'ï¿½': Result[i] := 'I';
+      'ï¿½', 'o', 'ï¿½', 'ï¿½', 'o': Result[i] := 'o';
+      'ï¿½', 'O', 'ï¿½', 'ï¿½', 'O': Result[i] := 'O';
+      'ï¿½', 'u', 'ï¿½', 'u': Result[i] := 'u';
+      'ï¿½', 'U', 'ï¿½', 'U': Result[i] := 'U';
       // Add any other special characters and their replacements here
     end;
   end;
@@ -683,6 +685,20 @@ var stepSQL: String;
 begin
     stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [Ares.AcKey, stepId]);
     result := oxSQLExpRowWithParams(stepSQL, params);
+end;
+
+function oxSQLStepResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): String;
+var stepSQL: String;
+begin
+    stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [Ares.AcKey, stepId]);
+    result := oxSQLExpWithBlob(stepSQL, blob, params);
+end;
+
+function oxSQLStepRowResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): TdlDataSet;
+var stepSQL: String;
+begin
+    stepSQL := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [Ares.AcKey, stepId]);
+    result := oxSQLExpRowWithBlob(stepSQL, blob, params);
 end;
 
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
