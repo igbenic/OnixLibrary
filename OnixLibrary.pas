@@ -5,8 +5,9 @@ unit OnixLibrary;
 interface 
 
 
-Uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils
-, cxCalc, Forms, dialogs, Classes, clEncoder, menus, DB, extctrls, DateUtils, clHTTP, clHTTPRequest, clJson;
+Uses dlComponents, cxScrollBox, cxgrid, controls, Variants, dlDatabase, Sysutils, 
+    cxCalc, Forms, dialogs, Classes, clEncoder, menus, DB, extctrls, DateUtils, clHTTP, 
+    clHTTPRequest, clJson, dlCommon;
 
 type TCheckboxListOnix = class(TComponent)
     private                 
@@ -136,6 +137,7 @@ function oxContainsValue(const Arr: array of string; const Value: string): Boole
 function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
 function oxSQLExpWithBlob(sql: String; blob: TStream; params: array of Variant): String;
 function oxSQLExpRowWithBlob(sql: String; blob: TStream; params: array of Variant): TdlDataSet;
+function oxGetTempPath(): String;
 procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
@@ -167,6 +169,14 @@ procedure oxImportCSV(csv: array of TStringList; tableName: String; tableColumns
 procedure oxParseAndImportCSV(const CSVFileName, Delimiter, QuoteChar: string; tableName: String; tableColumns: array of string; firstRow: integer = 0; recreateTable: boolean = true; cleanTable: boolean = true);
 
 Implementation
+
+function oxGetTempPath(): String;
+var shell: TcShell;
+begin
+    shell := TcShell.Create();
+    
+    result := shell.GetTempPath();
+end;
 
 procedure oxLogAresVariables();
 var variableStrings: TStringList;
@@ -229,24 +239,24 @@ begin
   for i := 1 to Length(Result) do
   begin
     case Result[i] of
-      '�', '�': Result[i] := 'c';
-      '�': Result[i] := 's';
-      '�': Result[i] := 'd';
-      '�': Result[i] := 'z';
-      '�', '�': Result[i] := 'C';
-      '�': Result[i] := 'S';
-      '�': Result[i] := 'D';
-      '�': Result[i] := 'Z';
-      '�', 'a', '�', '�', 'a': Result[i] := 'a';
-      '�', 'A', '�', '�', 'A': Result[i] := 'A';
-      '�', 'e', '�', 'e': Result[i] := 'e';
-      '�', 'E', '�', 'E': Result[i] := 'E';
-      '�', 'i', 'i', '�': Result[i] := 'i';
-      '�', 'I', 'I', '�': Result[i] := 'I';
-      '�', 'o', '�', '�', 'o': Result[i] := 'o';
-      '�', 'O', '�', '�', 'O': Result[i] := 'O';
-      '�', 'u', '�', 'u': Result[i] := 'u';
-      '�', 'U', '�', 'U': Result[i] := 'U';
+      ' ', ' ': Result[i] := 'c';
+      ' ': Result[i] := 's';
+      ' ': Result[i] := 'd';
+      ' ': Result[i] := 'z';
+      ' ', ' ': Result[i] := 'C';
+      ' ': Result[i] := 'S';
+      ' ': Result[i] := 'D';
+      ' ': Result[i] := 'Z';
+      ' ', 'a', ' ', ' ', 'a': Result[i] := 'a';
+      ' ', 'A', ' ', ' ', 'A': Result[i] := 'A';
+      ' ', 'e', ' ', 'e': Result[i] := 'e';
+      ' ', 'E', ' ', 'E': Result[i] := 'E';
+      ' ', 'i', 'i', ' ': Result[i] := 'i';
+      ' ', 'I', 'I', ' ': Result[i] := 'I';
+      ' ', 'o', ' ', ' ', 'o': Result[i] := 'o';
+      ' ', 'O', ' ', ' ', 'O': Result[i] := 'O';
+      ' ', 'u', ' ', 'u': Result[i] := 'u';
+      ' ', 'U', ' ', 'U': Result[i] := 'U';
       // Add any other special characters and their replacements here
     end;
   end;
