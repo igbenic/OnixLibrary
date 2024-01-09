@@ -142,8 +142,11 @@ procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxDrillClassParentUpwards(obj: TWinControl); 
 procedure oxAfterDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+procedure oxBeforeDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxAfterDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+procedure oxAfterDataSetEdit(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+procedure oxAfterDataSetDelete(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 procedure oxRefreshDataset(dataSet: String);
 procedure oxRefreshGrid(grid: String; keepRecord: boolean = false);
 procedure oxRedrawGrid(grid: String);
@@ -1510,6 +1513,19 @@ begin
     end;
 end;
 
+procedure oxBeforeDataSetOpen(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+var localAfterOpen: TLocalAfterOpen;
+begin
+    with oxGetDataset(dataset) do
+    begin
+        localAfterOpen := TLocalAfterOpen.Create(BeforeOpen);
+        localAfterOpen.Callback := callback;
+        localAfterOpen.AfterOldEvent := afterOldEvent;    
+        BeforeOpen := localAfterOpen.NewEvent;
+        _macro.eventlogadd('New event set for ' + dataset);
+    end;
+end;
+
 procedure oxBeforeDataSetPost(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
 var localAfterOpen: TLocalAfterOpen;
 begin
@@ -1541,6 +1557,32 @@ begin
         localAfterOpen.Callback := callback;
         localAfterOpen.AfterOldEvent := afterOldEvent;    
         AfterPost := localAfterOpen.NewEvent;
+        _macro.eventlogadd('New event set for ' + dataset);
+    end;
+end;
+
+procedure oxAfterDataSetEdit(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+var localAfterOpen: TLocalAfterOpen;
+begin
+    with oxGetDataset(dataset) do
+    begin
+        localAfterOpen := TLocalAfterOpen.Create(AfterPost);
+        localAfterOpen.Callback := callback;
+        localAfterOpen.AfterOldEvent := afterOldEvent;    
+        AfterEdit := localAfterOpen.NewEvent;
+        _macro.eventlogadd('New event set for ' + dataset);
+    end;
+end;  
+
+procedure oxAfterDataSetDelete(dataSet: String; callback: oxCallback; afterOldEvent: boolean = false);
+var localAfterOpen: TLocalAfterOpen;
+begin
+    with oxGetDataset(dataset) do
+    begin
+        localAfterOpen := TLocalAfterOpen.Create(AfterPost);
+        localAfterOpen.Callback := callback;
+        localAfterOpen.AfterOldEvent := afterOldEvent;    
+        AfterDelete := localAfterOpen.NewEvent;
         _macro.eventlogadd('New event set for ' + dataset);
     end;
 end;
