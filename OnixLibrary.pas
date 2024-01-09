@@ -138,7 +138,8 @@ function oxMakeDSWithParams(sql: String; params: array of Variant): TdlDataSet;
 function oxSQLExpWithBlob(sql: String; blob: TStream; params: array of Variant): String;
 function oxSQLExpRowWithBlob(sql: String; blob: TStream; params: array of Variant): TdlDataSet;
 function oxGetTempPath(): String;
-function oxGetStepSQL(stepId: Integer; aresAcKey: String): String;
+function oxGetStepSQL(stepId: Integer): String;
+function oxGetStepSQLFromAres(stepId: Integer; aresAcKey: String): String;
 procedure oxLogAresVariables();
 procedure oxDrillClassParent(obj: TObject); 
 procedure oxDrillClassParentUpwards(obj: TWinControl); 
@@ -662,7 +663,7 @@ end;
 function oxSQLStepWithAresVariablesApplied(stepId: Integer): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, ares.AcKey);
     stepSQL := oxApplyAresVariablesToString(stepSQL);
     result := stepSQL;
 end;
@@ -670,55 +671,60 @@ end;
 function oxSQLStepResultWithParamsAnotherAres(stepId: Integer; aresAcKey: String; params: array of Variant): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, aresAcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, aresAcKey);
     result := oxSQLExpWithParams(stepSQL, params);
 end;
 
 function oxSQLStepResult( stepId: Integer): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, Ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, Ares.AcKey);
     result := oxSQLExp(stepSQL);
 end;
 
 function oxSQLStepResultWithParams(stepId: Integer; params: array of Variant): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, Ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, Ares.AcKey);
     result := oxSQLExpWithParams(stepSQL, params);
 end;
 
 function oxSQLStepRowResultWithParams(stepId: Integer; params: array of Variant): TdlDataSet;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, Ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, Ares.AcKey);
     result := oxSQLExpRowWithParams(stepSQL, params);
 end;
 
 function oxSQLStepResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, Ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, Ares.AcKey);
     result := oxSQLExpWithBlob(stepSQL, blob, params);
 end;
 
 function oxSQLStepRowResultWithParamsAndBlob(stepId: Integer; blob: TStream; params: array of Variant): TdlDataSet;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, Ares.AcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, Ares.AcKey);
     result := oxSQLExpRowWithBlob(stepSQL, blob, params);
 end;
 
 function oxSQLStepResultAnotherAres( stepId: Integer; aresAcKey: String = nil): String;
 var stepSQL: String;
 begin
-    stepSQL := oxGetStepSQL(stepId, aresAcKey);
+    stepSQL := oxGetStepSQLFromAres(stepId, aresAcKey);
     result := oxSQLExp(stepSQL);
 end;
 
-function oxGetStepSQL(stepId: Integer; aresAcKey: String = nil): String;
+function oxGetStepSQLFromAres(stepId: Integer; aresAcKey: String = nil): String;
 begin
     Result := oxSQLExpWithParams('select CONVERT(varchar(max), acSQLExp) from tPA_SQLIStep where acKey = :p0 and anNo = :p1', [aresAcKey, stepId]);
+end;
+
+function oxGetStepSQL(stepId: Integer): String;
+begin
+    Result := oxGetStepSQLFromAres(stepId, Ares.AcKey);
 end;
 
 procedure oxDefer(callback: oxCallback; forMs: integer = 1);
