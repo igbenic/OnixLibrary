@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OnixLibrary.dir/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="493f82d9-8f0c-472e-8142-3e66f0187315" name="52673 &#13; testiram" comment="" />
     <list id="475425cb-6fcf-4fe6-8e4a-2fe3dc4641c7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,6 +127,7 @@
       <workItem from="1702563032563" duration="1210000" />
       <workItem from="1703857594356" duration="13852000" />
       <workItem from="1704313660320" duration="216000" />
+      <workItem from="1704815191383" duration="2117000" />
     </task>
     <option name="localTasksCounter" value="3" />
     <servers>
