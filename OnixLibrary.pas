@@ -1833,6 +1833,7 @@ begin
     if comp is TdlcxLabeledDBTextEdit then Result := TdlcxLabeledDBTextEdit(comp).EditingValue
         else if comp is TdlcxLabeledNumberEdit then Result := TdlcxLabeledNumberEdit(comp).EditingValue
     else if comp is TDaDBLookupComboBox then Result := TDaDBLookupComboBox(comp).EditingValue
+    else if comp is TDaLookupComboBox then Result := TDaLookupComboBox(comp).EditingValue
         else showmessage('Nije implementirana vrsta za ' + ofElement + ': ' + comp.classname);
     end;
     
@@ -2146,16 +2147,16 @@ begin
      
     if procFirstLine.IndexOf('override') = 0 then
     begin
-        _macro.EventLogAdd('Ne postoji naša override procedura, ako postoji original brišem ga i radim override proceduru i backup');
+        _macro.EventLogAdd('Ne postoji naĹˇa override procedura, ako postoji original briĹˇem ga i radim override proceduru i backup');
         
         originalProcFirstLine := oxSQLExpWithParams('exec sp_helptext :p0', [oldProcName]);
         
         if originalProcFirstLine = '' then
         begin
-            _macro.EventLogAdd('Ne postoji originalna procedura, mogu napraviti backup proceduru i izraditi override proceduru, ne brišem ništa, nastavljam normalno');
+            _macro.EventLogAdd('Ne postoji originalna procedura, mogu napraviti backup proceduru i izraditi override proceduru, ne briĹˇem niĹˇta, nastavljam normalno');
         end else
         begin
-            _macro.EventLogAdd('Postoji originalna procedura, brišem je, i nastavljam');
+            _macro.EventLogAdd('Postoji originalna procedura, briĹˇem je, i nastavljam');
             procToDelete := oldProcName;
             oxSQLExp('drop ' + objectType + ' ' + objectName);
         end;
@@ -2166,11 +2167,11 @@ begin
         oxSQLExp(stepSQL);
     end else
     begin
-        _macro.EventLogAdd('Postoji naša override procedura, provjeravam ako je verzija dobra');
+        _macro.EventLogAdd('Postoji naĹˇa override procedura, provjeravam ako je verzija dobra');
         
         if procFirstLine.IndexOf(procVersion) = 0 then
         begin
-            _macro.EventLogAdd('Kriva verzija override procedure: ''' + COPY(procFirstLine, procFirstLine.IndexOf('override') + 1, LENGTH(procFirstLine) - 2) + ''', tražio sam verziju: ''' +  procVersion + ''', radim alter, original ne diram');
+            _macro.EventLogAdd('Kriva verzija override procedure: ''' + COPY(procFirstLine, procFirstLine.IndexOf('override') + 1, LENGTH(procFirstLine) - 2) + ''', traĹľio sam verziju: ''' +  procVersion + ''', radim alter, original ne diram');
             method := 'ALTER'; // samo promjeni staru proceduru na novu verziju
             // postavljanje
             Ares.Variables['method'] := method;
@@ -2178,7 +2179,7 @@ begin
             oxSQLExp(stepSQL);
         end else
         begin
-            _macro.EventLogAdd('Verzija procedure je ok, ne diram ništa');
+            _macro.EventLogAdd('Verzija procedure je ok, ne diram niĹˇta');
         end;
     end;
 end;
@@ -2188,7 +2189,7 @@ procedure oxVersioned(stepId: integer; objectName: String; objectType: String; v
 begin
     TransactionStart();
     try
-        Versioned(stepId, objectName, version, objectType, objectName); // naziv procedure koju overrideamo, pa verzija naše override procedure, primjer se nalazi u SQL-u 3, tu treba napraviti override s istim parametrima
+        Versioned(stepId, objectName, version, objectType, objectName); // naziv procedure koju overrideamo, pa verzija naĹˇe override procedure, primjer se nalazi u SQL-u 3, tu treba napraviti override s istim parametrima
         TransactionCommit();
      except on E:Exception do
         begin
